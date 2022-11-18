@@ -1,0 +1,7 @@
+node_modules
+.vscode
+.gitattributes
+.dockerignore
+package-lock.json
+package.json
+tailwind.config.js
