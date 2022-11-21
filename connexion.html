@@ -14,7 +14,7 @@
     <link href='./css/main_style.css' rel='stylesheet' type='text/css' />
 
     <!-- Font -->
-    <link href='https://fonts.googleapis.com/css?family=Raleway:400,200,300,500,600,700,800,900,100' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,200,300,500,600,700,800,900,100' rel='stylesheet' type='text/css' />
 
     <!-- Main JS -->
     <script src='./js/main_script.js' type='text/javascript' defer></script>
@@ -22,8 +22,114 @@
     <title>Connexion</title>
   </head>
 
-  <body>
+  <body class='bg-gradient-to-r from-gray-100 to-gray-200 dark:from-neutral-700 dark:to-neutral-800'>
+
+    <nav class='bg-gray-800 border-gray-700 px-2 sm:px-4 py-2.5 fixed w-full'>
+      <div class='container flex flex-wrap justify-between items-center mx-auto'>
+        <a href='./' class='md:font-bold text-[#335bff] flex items-center archivo self-center text-2xl whitespace-nowrap'>
+          <span class='text-2xl'>PLATEFORME</span>
+          <span class='text-2xl'>&nbsp;&nbsp;de</span>
+          <span class='text-2xl'>&nbsp;&nbsp;TRADUCTIONS</span>
+        </a>
+        <div class='hidden w-full md:block md:w-auto'>
+          <ul class='flex flex-col p-4 mt-4 bg-gray rounded-lg border border-gray-100 md:flex-row md:space-x-6 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-gray'>
+            <li>
+              <a id='services' href='#services' class='block py-2 pr-4 pl-3 text-white rounded hover:text-white hover:bg-blue-500 duration-75 text-lg'>Services</a>
+            </li>
+            <li>
+              <a id='translators' href='#translators' class="block py-2 pr-4 pl-3 text-white rounded hover:text-white hover:bg-blue-500 duration-75 text-lg">Traducteurs</a>
+            </li>
+            <li>
+              <a id='contact' href='#contact' class='block py-2 pr-4 pl-3 text-white rounded hover:text-white hover:bg-blue-500 duration-75 text-lg'>Contact</a>
+            </li>
+            <li>
+              <a id='connexion' href='./connexion.html' class='block py-2 pr-4 pl-3 text-gray-500 rounded hover:text-white hover:bg-blue-500 duration-75 text-lg negative_index'>Connexion</a>
+            </li>
+            <li>
+              <a class='cursor-pointer px-2 py-1 rounded flex items-center text-white bg-gray text-black hover:bg-blue-500 duration-75'>
+                <img id='light' src='./assets/icons/svg/sun_winter_icon.svg' alt='light mode'>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main id='main' class='mx-auto' style='max-width: 2560px;'>
+
+      <div class='mx-auto' style='max-width: 1140px;'>
+        <div class='md:py-0 py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center md:h-screen space-y-6'>
+          <div class='flex justify-center items-center'>
+            <a class='text-white font-bold text-3xl' href='./'>Connexion</a>
+          </div>
+          <div class='md:bg-white md:shadow-lg md:rounded'>
+            <div class='dark:bg-zinc-800 dark:text-white'>
+              <div class='md:flex md:py-8 md:px-0 px-6'>
     
+                <form id='form-login' action='login' class='md:px-16 px-2 md:py-3 py-12 md:w-1/2 md:border-r md:border-b-0 border-b' method='POST'>
+                  <h2 class='text-2xl font-semibold mb-4 whitespace-nowrap'>Connexion par email</h2>
+                  <div class='w-full flex flex-col space-y-5 pt-14'>
+                    <div class='flex flex-col space-y-1 flex-1 relative pb-10'>
+                      <label class='font-semibold'>Email</label>
+                      <input type='email' name='email' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Email' required>
+                    </div>
+                    <div class='mb-4'>
+                      <label class='mb-2 flex justify-between items-center'>
+                        <span class='font-semibold'>Mot de passe</span>
+                        <a class='text-primary underline' href='#connexion'>Mot de passe oublié ?
+                        </a>
+                      </label>
+                      <div class='relative flex flex-col pb-10'>
+                        <input type='password' name='password' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Password' required>
+                      </div>
+                    </div>
+                    <div class='flex justify-end'>
+                      <input type='submit' id='logInForm' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value='Connexion' />
+                    </div>
+                  </div>
+                </form>
+    
+                <form id="form-signup" action='signup' class='md:px-16 px-2 md:py-3 py-12 md:w-1/2' method="POST">
+                  <h2 class="text-2xl font-semibold mb-4 whitespace-nowrap">Inscription</h2>
+                  <div class="w-full flex flex-col space-y-5">
+                    <div class='flex flex-col space-y-1 flex-1 relative'>
+                      <label class='font-semibold'>Entrez votre email</label>
+                      <input type='email' name='email' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your email'>
+                    </div>
+                    <div class='flex flex-col space-y-1 flex-1 relative'>
+                      <label class='font-semibold'>Choisir un Pseudo</label>
+                      <input type='text' name='email' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your pseudo'>
+                    </div>
+                    <div class='mb-4'>
+                      <label class='mb-2 flex justify-between items-center'>
+                        <span class='font-semibold'>Choisir un mot de passe</span>
+                      </label>
+                      <div class='relative flex flex-col'>
+                        <input type='password' name='password' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Password' required>
+                      </div>
+                    </div>
+                    <div class='mb-4'>
+                      <label class='mb-2 flex justify-between items-center'>
+                        <span class='font-semibold'>Confirmez le mot de passe</span>
+                      </label>
+                      <div class='relative flex flex-col'>
+                        <input type='password' name='password_confirm' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Confirm Password' required>
+                      </div>
+                    </div>
+                    <div class='flex justify-end'>
+                      <input type='submit' id='signUpForm' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value='Inscription' />
+                    </div>
+                  </div>
+                </form>
+    
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
   </body>
 
 </html>
