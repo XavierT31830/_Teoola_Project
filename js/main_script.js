@@ -13,7 +13,7 @@ function displayConnexion(e) {
   CnxLogIn.classList.toggle('text-white');
   CnxLogIn.classList.toggle('text-gray-500');
 
-  Main.innerHTML = `<div class='mx-auto' style='max-width: 1140px;'>
+  Main.innerHTML = `<div class='mx-auto pt-8' style='max-width: 1140px;'>
     <div class='md:py-0 py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center md:h-screen space-y-6'>
       <div class='flex justify-center items-center'>
         <a class='text-white font-bold text-3xl' href='./'>Connexion</a>
@@ -54,8 +54,12 @@ function displayConnexion(e) {
                   <input type='email' name='email' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your email'>
                 </div>
                 <div class='flex flex-col space-y-1 flex-1 relative'>
-                  <label class='font-semibold'>Choisir un Pseudo</label>
-                  <input type='text' name='email' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your pseudo'>
+                  <label class='font-semibold'>Votre Nom</label>
+                  <input type='text' name='lname' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your pseudo'>
+                </div>
+                <div class='flex flex-col space-y-1 flex-1 relative'>
+                  <label class='font-semibold'>Votre Prénom</label>
+                  <input type='text' name='fname' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your pseudo'>
                 </div>
                 <div class='mb-4'>
                   <label class='mb-2 flex justify-between items-center'>
@@ -114,18 +118,24 @@ function removeMainDisplay() {
   };
 }
 
+function verif(formData, action, func) {
+  
+  sendCnxData(formData, action, func);
+}
+
 function defineSessionStorage(data) {
-  sessionStorage.id_user = data.id_account;
+  sessionStorage.id_user = data.id_user;
   sessionStorage.userRole = data.role;
-  sessionStorage.pseudo = data.pseudo;
+  sessionStorage.lname = data.last_name;
+  sessionStorage.fname = data.first_name;
 }
 
 function getUserSuccess(resp, displayMsg) {
   if (typeof resp === 'string' || resp instanceof String) {
-    displayMsg.innerHTML = `${resp}`
+    displayMsg.innerHTML = `${resp}`;
   }
   else {
-    let msg = `(JS) Correctly logged as ${resp.pseudo}`;
+    let msg = `Identifié sous le nom de ${resp.last_name} ${first_name}`;
     displayMsg.innerHTML = msg;
     defineSessionStorage(resp);
   }
