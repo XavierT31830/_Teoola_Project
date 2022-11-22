@@ -21,7 +21,7 @@ class DAO_users {
   public function getUser($data) {
     $this -> cnx();
     $sql = 'SELECT * FROM traductions.users 
-            INNER JOIN roles 
+            INNER JOIN relation_app_users 
             ON users.role_id = roles.id_role 
             WHERE BINARY `users`.`email` = :email 
             AND `users`.`pwd` = :pwd';
