@@ -4,7 +4,7 @@
 <?php
 
 function verifPwd($data) {
-  $regex = '#^(?=.*?[A-ZÙÚÛÜŨÒÓÔÕÖÉÈÊËÀÁÂÃÄÇÌÍÎÏĨ])(?=.*?[a-zùúûüũòóôõöéèêëàáâãäçìíîïĩ])(?=.*?[0-9])(?=.*?[\#?!@$%^&*-]).{8,100}$#';
+  $regex = '#^(?=.*?[A-ZÙÚÛÜŨÒÓÔÕÖÉÈÊËÀÁÂÃÄÇÌÍÎÏĨ])(?=.*?[a-zùúûüũòóôõöéèêëàáâãäçìíîïĩ])(?=.*?[0-9])(?=.*?[\#?!@$%^&*-]).{8,50}$#';
   $pwd = strval($data);
 
   if (preg_match($regex, $pwd) == 1) {
@@ -38,6 +38,19 @@ function verifEmail($data) {
   }
   else {
     $resultat = 'Invalid Email!';
+    return $resultat;
+  }
+}
+
+function verifTitleApp($data) {
+  $regex = '#^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\dùúûüũòóôõöéèêëàáâãäçìíîïĩÙÚÛÜŨÒÓÔÕÖÉÈÊËÀÁÂÃÄÇÌÍÎÏĨ ]{4,100}$#';
+  $title = strval($data);
+
+  if (preg_match($regex, $title) == 1) {
+    return preg_match($regex, $title);
+  }
+  else {
+    $resultat = 'Invalid Title!</br></br>- (requires) at least one lower case</br>- (requires) at least one upper case</br>- (requires) 4 characters minimum</br>- accents, numbers, space are allowed</br>- 100 characters Maximum';
     return $resultat;
   }
 }

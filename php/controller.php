@@ -4,6 +4,7 @@
 <?php
 
   require ('../php_class/dao.users.class.php');
+  require ('../php_class/dao.applications.class.php');
 
   require ('back_security.php');
   require ('verif_data.php');
@@ -83,6 +84,25 @@
         }
         else if (verifPwd($pwdConfirm) != 1) {
           $msg_insert = 'Invalid Password Confirmation!';
+        }
+      }
+      echo json_encode($msg_insert);
+      break;
+
+    case 'createapp':
+      $dao = new DAO_applications();
+      $title = security($receiveData -> title);
+      $appdesc = security($receiveData -> appdesc);
+      if (verifTitleApp($title) != 1) {
+        $msg_insert = verifTitleApp($title);
+      }
+      else {
+        $bool = $dao -> insertApp($receiveData);
+        if ($bool) {
+          $msg_insert = 'New application correctly added!';
+        }
+        else {
+          $msg_insert = 'Application-Title already exists!';
         }
       }
       echo json_encode($msg_insert);
