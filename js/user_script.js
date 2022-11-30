@@ -6,9 +6,17 @@ const UrlHash = window.location.hash;
 
 checkUrlHash(UrlHash);
 
-function checkUrlHash(UrlHash) {
-  if (UrlHash == '#appcreated') {
-    window.alert("Icon correctly uploaded!");
+function checkUrlHash(urlHash) {
+  removeMainDisplay();
+  if (urlHash == '#appcreated') {
+    uploadAppIcon();
+    setTimeout(() => {
+      let uploadIconMsg = document.getElementById('uploadIconMsg');
+      uploadIconMsg.innerHTML = `Image correctly uploaded!`;
+      setTimeout(() => {
+        window.location.href = './'
+      }, '3000');
+    }, '300');
   }
 }
 
@@ -99,7 +107,7 @@ function uploadAppIcon() {
       </div>
     </div>
   </div>
-  `;
+  `;    
 }
 
 function uploadAppIconResult(msg_insert) {

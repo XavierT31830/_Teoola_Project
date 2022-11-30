@@ -28,11 +28,8 @@
         if ($didUpload) {
           $confirm = "The file '" . basename($fileName) . "' has been correctly uploaded into : '" . $uploadPath . "' !";
           var_dump($confirm);
-          echo '<pre>';
-          print_r($confirm);
-          echo '</pre>';
-          sleep(3);
-          header('location:../index.html#appcreated');
+          sleep(2);
+          header('location:../#appcreated');
         }
         else {
           echo "An error occurred. Please contact the administrator.";
