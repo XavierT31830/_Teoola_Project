@@ -2,6 +2,16 @@
 
 CreateApp.addEventListener('click', () => createApplication());
 
+const UrlHash = window.location.hash;
+
+checkUrlHash(UrlHash);
+
+function checkUrlHash(UrlHash) {
+  if (UrlHash == '#appcreated') {
+    window.alert("Icon correctly uploaded!");
+  }
+}
+
 function createApplication() {
   removeMainDisplay();
 
@@ -75,7 +85,7 @@ function uploadAppIcon() {
               <div class='w-full flex flex-col space-y-5 pt-8'>
                 <div class='flex flex-col space-y-1 flex-1 relative pb-7'>
                   <label for='appicon' class='font-semibold'>Téléchargez votre icône</label>
-                  <input id='appicon' type='file' name='appicon' accept='.png, .jpg, .jpeg, .gif, .svg' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Upload icon' />
+                  <input id='appicon' type='file' name='appicon' accept='.jpg, .png, .jpeg, .gif, .svg' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Upload icon' value='400000' />
                 </div>
                 <div class='flex justify-end pt-7'>
                   <input type='submit' name='submit' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value='Valider' />
