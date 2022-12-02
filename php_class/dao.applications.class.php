@@ -32,6 +32,17 @@
       return $bool;
     }
 
+    public function getUserApps($id) {
+      $this -> cnx();
+      $sql = 'SELECT * FROM `applications` WHERE `user_id` = :id_user';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> bindValue(':id_user', $id);
+      $request -> execute();
+      $data = $request -> fetchAll();
+      $this -> cnx -> closeConnexion();
+      return $data;
+    }
+
   }
 
 ?>

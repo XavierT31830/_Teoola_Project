@@ -1,5 +1,5 @@
 
-
+AppList.addEventListener('click', () => userApps(sessionStorage.id_user));
 CreateApp.addEventListener('click', () => createApplication());
 
 const UrlHash = window.location.hash;
@@ -7,16 +7,27 @@ const UrlHash = window.location.hash;
 checkUrlHash(UrlHash);
 
 function checkUrlHash(urlHash) {
-  removeMainDisplay();
-  if (urlHash == '#appcreated') {
+  if (urlHash == '#appcreated' || urlHash == '#uploaderrors' || urlHash == '#uploadfail') {
     uploadAppIcon();
+    let uploadIconMsg = document.getElementById('uploadIconMsg');
     setTimeout(() => {
-      let uploadIconMsg = document.getElementById('uploadIconMsg');
-      uploadIconMsg.innerHTML = `Image correctly uploaded!`;
-      setTimeout(() => {
-        window.location.href = './'
-      }, '3000');
+      if (urlHash == '#appcreated') {
+        uploadIconMsg.innerHTML = `Image correctly uploaded!`;
+        setTimeout(() => {
+          window.location.href = './';
+        }, '3000');
+      }
+      if (urlHash == '#uploaderrors') {
+        uploadIconMsg.innerHTML = `File extension is not allowed (jpg, png, gif or svg)<br/>or exceeds maximum size (10MB)`;
+      }
+      if (urlHash == '#uploadfail') {
+        uploadIconMsg.innerHTML = `An error occurred.<br/>Please contact the administrator.`;
+      }
     }, '300');
+  }
+  console.log(urlHash);
+  if (urlHash == '#app_list') {
+    return `List of your apps :`;
   }
 }
 
@@ -25,7 +36,7 @@ function createApplication() {
 
   Main.innerHTML = `
   <div class='mx-auto pt-8' style='max-width: 1140px;'>
-    <div class='md:py-0 py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center md:h-screen space-y-6 items-center'>
+    <div class='md:pt-[8rem] py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center space-y-6 items-center'>
       <div class='flex justify-center items-center'>
         <span class='text-white font-bold text-3xl'>CRÉATION D'APPLICATION</span>
       </div>
@@ -80,7 +91,7 @@ function uploadAppIcon() {
 
   Main.innerHTML = `
   <div class='mx-auto pt-8' style='max-width: 1140px;'>
-    <div class='md:py-0 py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center md:h-screen space-y-6 items-center'>
+    <div class='md:pt-[8rem] py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center space-y-6 items-center'>
       <div class='flex justify-center items-center'>
         <span class='text-white font-bold text-3xl'>ICÔNE D'APPLICATION</span>
       </div>
@@ -110,8 +121,13 @@ function uploadAppIcon() {
   `;    
 }
 
-function uploadAppIconResult(msg_insert) {
-  console.log(msg_insert);
+function userApps(id_user) {
+  removeMainDisplay();
+  let data = {};
+  let action = 'displayapps';
+  let func = getUserAppsSuccess;
+  data.id_user = id_user;
+  sendCnxData(data, action, func);
 }
 
 // SUCCESS | FAILURE //
@@ -127,4 +143,49 @@ function createAppSuccess(resp, displayMsg) {
 function createAppFail(error, displayMsg) {
   displayMsg.innerHTML = `createAppFail(error)!`;
   console.log(`${error}\ncreateAppFail(error)`);
+}
+
+function getUserAppsSuccess(data, displayMsg) {
+  if (data != null || data != undefined) {
+    let urlRefresh = window.location.hash;
+    checkUrlHash(urlRefresh);
+    if (urlRefresh == '#app_list') {
+      displayMsg.innerHTML = checkUrlHash(urlRefresh);
+      let container = `<div id='container' class='flex mx-auto' style='max-width: 1500px;'></div>`
+      Main.innerHTML += container;
+      for (app of data) {
+        let divApp = `
+        <div class='mx-auto' style='max-width: 600px; min-width: 500px;'>
+          <div class='md:py-auto py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-rows justify-center md:h-screen space-y-6 items-center'>
+            <div class='md:bg-white md:shadow-lg md:rounded basis-10/12'>
+              <div class='dark:bg-zinc-800 dark:text-white' style='min-height: 350px; max-height: 350px;'>
+                <div class='md:flex md:py-8 md:px-4 px-6 justify-center'>
+
+                  <div class='md:px-auto px-2 md:border-b-0 border-b'>
+                    <h3 class='text-2xl font-semibold mb-4 whitespace-nowrap'>${app.title}
+                    </h3>
+                    <div class='w-full flex flex-col space-y-5 pt-14'>
+                      <div class='flex flex-col space-y-1 flex-1 relative pb-10'>${app.description}</div>
+                      <div class='flex justify-center'>
+                        <input type='submit' id='contentApp' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value="Modifier l'application" />
+                      </div>
+                      <div id='displayAppMsg${app.id}'></div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        `;
+        document.getElementById('container').innerHTML += divApp;
+      }
+    }
+  }
+}
+
+function displayUserAppsFail(error, displayMsg) {
+  displayMsg.innerHTML = `displayUserAppsFail(error)!`;
+  console.log(`${error}\ndisplayUserAppsFail(error)`);
 }

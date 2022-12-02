@@ -107,6 +107,12 @@
       }
       echo json_encode($msg_insert);
       break;
+
+    case 'displayapps':
+      $dao = new DAO_applications();
+      $data = $dao -> getUserApps($receiveData -> id_user);
+      echo json_encode($data);
+      break;
     
     default:
       # code...

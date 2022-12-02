@@ -6,6 +6,7 @@ const CnxSignIn = document.getElementById('subscribe');
 const CnxDeco = document.getElementById('deconnexion');
 const AppList = document.getElementById('app_list');
 const CreateApp = document.getElementById('create_app');
+const DefaultMsg = document.getElementById('defaultMsg');
 
 CnxLogIn.addEventListener('click', () => displayConnexion());
 CnxSignIn.addEventListener('click', () => displayInscription());
@@ -40,7 +41,7 @@ function displayConnexion() {
   toggleIfConnexion();
 
   Main.innerHTML = `
-  <div class='mx-auto pt-8' style='max-width: 1140px;'>
+  <div class='mx-auto' style='max-width: 1140px;'>
     <div class='md:py-0 py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center md:h-screen space-y-6 items-center'>
       <div class='flex justify-center items-center'>
         <span class='text-white font-bold text-3xl'>CONNEXION</span>
@@ -101,13 +102,13 @@ function displayInscription() {
 
   Main.innerHTML = `
   <div class='mx-auto pt-8' style='max-width: 1140px;'>
-    <div class='md:py-0 py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center md:h-screen space-y-6 items-center'>
+    <div class='md:pt-[6rem] pt-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center space-y-6 items-center'>
       <div class='flex justify-center items-center'>
         <span class='text-white font-bold text-3xl'>INSCRIPTION</span>
       </div>
       <div class='md:bg-white md:shadow-lg md:rounded md:w-3/4'>
         <div class='dark:bg-zinc-800 dark:text-white'>
-          <div class='md:flex md:py-8 md:px-0 px-6 justify-center'>
+          <div class='md:flex md:pt-8 md:px-0 px-6 justify-center'>
           
             <form id='form-signup' action='signup' class='md:px-16 px-2 md:py-3 py-12 md:w-3/4' method='POST'>
               <h2 class="text-2xl font-semibold mb-4 whitespace-nowrap">Entrez les informations suivantes :</h2>
@@ -171,6 +172,7 @@ function displayInscription() {
 
 // TOOLS //
 function removeMainDisplay() {
+  DefaultMsg.innerHTML = '';
   while (Main.firstChild) {
     Main.removeChild(Main.lastChild);
   };
@@ -231,6 +233,11 @@ function sendCnxData(formData, action, func) {
     case 'createapp':
       failure = createAppFail;
       displayMsg = CreateAppMsg;
+      break;
+
+    case 'displayapps':
+      failure = displayUserAppsFail;
+      displayMsg = DefaultMsg;
       break;
   
     default:
