@@ -1,20 +1,21 @@
 <?php
-
   if (isset($_POST['submit'])) {
-    if (isset($_FILES['appicon']['name'])) {
+    $title = array_keys($_FILES);
+    if (isset($_FILES[$title[0]]['name'])) {
       $uploadDirectory = dirname(__DIR__, 1) . '/uploads/';
       $errors = []; // Store errors here
       $fileExtensionsAllowed = ['jpeg','jpg','png', 'gif', 'svg']; // These will be the only file extensions allowed
       $separator = '.';
-      $fileName = $_FILES['appicon']['name'];
-      $fileSize = $_FILES['appicon']['size'];
-      $fileTempName = $_FILES['appicon']['tmp_name'];
-      $fileTempPath  = $_FILES['appicon']['full_path'];
-      $fileType = $_FILES["appicon"]["type"];
+      $fileName = $_FILES[$title[0]]['name'];
+      $fileSize = $_FILES[$title[0]]['size'];
+      $fileTempPath  = $_FILES[$title[0]]['full_path'];
+      $fileType = $_FILES[$title[0]]['type'];
       $fileExplode = explode($separator, $fileName);
       $fileExtension = end($fileExplode);
       $fileExtToLower = strtolower($fileExtension);
-      $uploadPath = $uploadDirectory . basename($fileName);
+      $fileTempName = $_FILES[$title[0]]['tmp_name'];
+      $newFileName = $title[0] . $separator . $fileExtension;
+      $uploadPath = $uploadDirectory . basename($newFileName);
 
       if (!in_array($fileExtToLower, $fileExtensionsAllowed)) {
         $errors[] = "This file extension is not allowed. Please upload a JPEG, JPG, PNG, GIF or SVG file. ||";
@@ -32,6 +33,8 @@
         }
         else {
           echo "An error occurred. Please contact the administrator.";
+          sleep(1);
+          
           header('location:../#uploadfail');
         }
       } 

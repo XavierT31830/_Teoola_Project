@@ -3,17 +3,20 @@ AppList.addEventListener('click', () => userApps(sessionStorage.id_user));
 CreateApp.addEventListener('click', () => createApplication());
 
 const UrlHash = window.location.hash;
+let title;
 
-checkUrlHash(UrlHash);
+checkUrlHash(UrlHash, title);
 
-function checkUrlHash(urlHash) {
+function checkUrlHash(urlHash, title) {
   if (urlHash == '#appcreated' || urlHash == '#uploaderrors' || urlHash == '#uploadfail') {
-    uploadAppIcon();
+    title = sessionStorage.appTitle;
+    uploadAppIcon(title);
     let uploadIconMsg = document.getElementById('uploadIconMsg');
     setTimeout(() => {
       if (urlHash == '#appcreated') {
         uploadIconMsg.innerHTML = `Image correctly uploaded!`;
         setTimeout(() => {
+          sessionStorage.removeItem('appTitle');
           window.location.href = './';
         }, '3000');
       }
@@ -25,9 +28,13 @@ function checkUrlHash(urlHash) {
       }
     }, '300');
   }
-  console.log(urlHash);
+  console.log(title);
   if (urlHash == '#app_list') {
     return `List of your apps :`;
+  }
+  if (urlHash == '#app_list_refresh') {
+    window.location.href = '#app_list';
+    userApps(sessionStorage.id_user);
   }
 }
 
@@ -86,7 +93,7 @@ function createApplication() {
   });
 }
 
-function uploadAppIcon() {
+function uploadAppIcon(data) {
   removeMainDisplay();
 
   Main.innerHTML = `
@@ -104,7 +111,7 @@ function uploadAppIcon() {
               <div class='w-full flex flex-col space-y-5 pt-8'>
                 <div class='flex flex-col space-y-1 flex-1 relative pb-7'>
                   <label for='appicon' class='font-semibold'>Téléchargez votre icône</label>
-                  <input id='appicon' type='file' name='appicon' accept='.jpg, .png, .jpeg, .gif, .svg' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Upload icon' value='400000' />
+                  <input id='appicon' type='file' name='${data}' accept='.jpg, .png, .jpeg, .gif, .svg' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Upload icon' value='400000' />
                 </div>
                 <div class='flex justify-end pt-7'>
                   <input type='submit' name='submit' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value='Valider' />
@@ -132,10 +139,13 @@ function userApps(id_user) {
 
 // SUCCESS | FAILURE //
 function createAppSuccess(resp, displayMsg) {
-  displayMsg.innerHTML = `${resp}`;
-  if (resp == `New application correctly added!`) {
+  console.log(resp.title);
+  displayMsg.innerHTML = `${resp.msg}`;
+  if (resp.msg == `New application correctly added!`) {
     setTimeout(() => {
-      uploadAppIcon();
+      uploadAppIcon(resp.title);
+      sessionStorage.appTitle = resp.title;
+      console.log(sessionStorage.appTitle);
     }, '1500');
   }
 }
@@ -148,15 +158,15 @@ function createAppFail(error, displayMsg) {
 function getUserAppsSuccess(data, displayMsg) {
   if (data != null || data != undefined) {
     let urlRefresh = window.location.hash;
-    checkUrlHash(urlRefresh);
     if (urlRefresh == '#app_list') {
       displayMsg.innerHTML = checkUrlHash(urlRefresh);
-      let container = `<div id='container' class='flex mx-auto' style='max-width: 1500px;'></div>`
+      window.location.href = '#app_list_refresh';
+      let container = `<div id='container' class='flex flex-row flex-wrap mx-auto max-w-fit'></div>`
       Main.innerHTML += container;
       for (app of data) {
         let divApp = `
-        <div class='mx-auto' style='max-width: 600px; min-width: 500px;'>
-          <div class='md:py-auto py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-rows justify-center md:h-screen space-y-6 items-center'>
+        <div class='mx-auto relative top-60' style='max-width: 600px; min-width: 500px;'>
+          <div class='md:px-2 pt-4 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-row justify-center md:h-3/6 space-y-6 items-center'>
             <div class='md:bg-white md:shadow-lg md:rounded basis-10/12'>
               <div class='dark:bg-zinc-800 dark:text-white' style='min-height: 350px; max-height: 350px;'>
                 <div class='md:flex md:py-8 md:px-4 px-6 justify-center'>
@@ -169,7 +179,7 @@ function getUserAppsSuccess(data, displayMsg) {
                       <div class='flex justify-center'>
                         <input type='submit' id='contentApp' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value="Modifier l'application" />
                       </div>
-                      <div id='displayAppMsg${app.id}'></div>
+                      <div id='displayAppMsg_${app.id_app}'></div>
                     </div>
                   </div>
 

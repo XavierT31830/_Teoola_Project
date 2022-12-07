@@ -19,6 +19,7 @@
     <!-- Main JS -->
     <script src='./js/main_script.js' type='text/javascript' defer></script>
     <script src='./js/user_script.js' type='text/javascript' defer></script>
+    <script src='./js/admin_script.js' type='text/javascript' defer></script>
 
     <title>Plateforme de Traductions</title>
   </head>
@@ -36,6 +37,9 @@
           <ul class='flex flex-col p-4 mt-4 bg-gray rounded-lg border border-gray-100 md:flex-row md:space-x-6 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-gray'>
             <li>
               <a id='translators' href='#translators' class='hidden py-2 pr-4 pl-3 text-white rounded hover:text-white hover:bg-blue-500 duration-75 text-lg'>Traducteurs</a>
+            </li>
+            <li>
+              <a id='define_role' href='#define_role' class='hidden py-2 pr-4 pl-3 text-white rounded hover:text-white hover:bg-blue-500 duration-75 text-lg'>Gestion des rôles</a>
             </li>
             <li>
               <a id='app_list' href='#app_list' class='hidden py-2 pr-4 pl-3 text-white rounded hover:text-white hover:bg-blue-500 duration-75 text-lg'>Mes applications</a>
@@ -63,7 +67,7 @@
     </nav>
 
     <div id='defaultMsg' class='absolute left-[10%] top-[7rem] text-white text-center'></div>
-    <main id='main' class='mx-auto' style='max-width: 2560px;'></main>
+    <main id='main' class='mx-auto' style='max-width: 100%;'></main>
 
   </body>
 

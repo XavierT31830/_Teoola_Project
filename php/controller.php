@@ -105,7 +105,11 @@
           $msg_insert = 'Application-Title already exists!';
         }
       }
-      echo json_encode($msg_insert);
+      $data = $dao -> getAppTitle($title);
+      $data['msg'] = $msg_insert;
+      // echo json_encode($msg_insert);
+      // var_dump($data);
+      echo json_encode($data);
       break;
 
     case 'displayapps':

@@ -43,6 +43,17 @@
       return $data;
     }
 
+    public function getAppTitle($title) {
+      $this -> cnx();
+      $sql = 'SELECT `title` FROM `applications` WHERE `title` = :title';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> bindValue(':title', $title);
+      $request -> execute();
+      $data = $request -> fetch();
+      $this -> cnx -> closeConnexion();
+      return $data;
+    }
+
   }
 
 ?>
