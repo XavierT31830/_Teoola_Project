@@ -1,6 +1,3 @@
-
-
-
 <?php
 
 function verifPwd($data) {

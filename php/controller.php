@@ -1,10 +1,8 @@
-
-
-
 <?php
 
   require ('../php_class/dao.users.class.php');
   require ('../php_class/dao.applications.class.php');
+  require ('../php_class/dao.relations.class.php');
 
   require ('back_security.php');
   require ('verif_data.php');
@@ -90,14 +88,14 @@
       break;
 
     case 'createapp':
-      $dao = new DAO_applications();
+      $dao_app = new DAO_applications();
       $title = security($receiveData -> title);
       $appdesc = security($receiveData -> appdesc);
       if (verifTitleApp($title) != 1) {
         $msg_insert = verifTitleApp($title);
       }
       else {
-        $bool = $dao -> insertApp($receiveData);
+        $bool = $dao_app -> insertApp($receiveData);
         if ($bool) {
           $msg_insert = 'New application correctly added!';
         }
@@ -105,11 +103,26 @@
           $msg_insert = 'Application-Title already exists!';
         }
       }
-      $data = $dao -> getAppTitle($title);
+      $data = $dao_app -> getAppByTitle($title);
       $data['msg'] = $msg_insert;
-      // echo json_encode($msg_insert);
-      // var_dump($data);
-      echo json_encode($data);
+      $data['role_id'] = 1; // Auto-assign : Admin/Owner rôle on app_creation
+      $dao_relation = new DAO_relations();
+      $relation = $dao_relation -> createAdminRelation($data);
+      if (!$relation) {
+        $msg_insert = 'Create relation...';
+        $delete = $dao_app -> deleteAppByID($data['id_app']);
+        if ($delete) {
+          $msg_insert = 'Error at application creation! Please try again...';
+        }
+        else {
+          $msg_insert = 'Unexpected error!!';
+        }
+        $data['msg'] = $msg_insert;
+        echo json_encode($data['msg']);
+      }
+      else {
+        echo json_encode($data);
+      }
       break;
 
     case 'displayapps':

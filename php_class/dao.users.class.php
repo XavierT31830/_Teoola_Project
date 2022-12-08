@@ -1,6 +1,3 @@
-
-
-
 <?php
 
   require_once ('cnx.class.php');

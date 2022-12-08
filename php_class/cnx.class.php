@@ -1,9 +1,3 @@
-
-
-
-
-
-
 <?php
 
 class Dbcnx {

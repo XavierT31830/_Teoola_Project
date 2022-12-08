@@ -1,6 +1,3 @@
-
-
-
 <?php
 
   require_once ('cnx.class.php');
@@ -43,15 +40,25 @@
       return $data;
     }
 
-    public function getAppTitle($title) {
+    public function getAppByTitle($title) {
       $this -> cnx();
-      $sql = 'SELECT `title` FROM `applications` WHERE `title` = :title';
+      $sql = 'SELECT * FROM `applications` WHERE `title` = :title';
       $request = $this -> openCnx -> prepare($sql);
       $request -> bindValue(':title', $title);
       $request -> execute();
       $data = $request -> fetch();
       $this -> cnx -> closeConnexion();
       return $data;
+    }
+
+    public function deleteAppByID($id) {
+      $this -> cnx();
+      $sql = 'DELETE FROM `applications` WHERE `id_app` = :id_app';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> bindValue(':id_app', $id);
+      $bool= $request -> execute($request);
+      $this -> cnx -> closeConnexion();
+      return $bool;
     }
 
   }
