@@ -29,7 +29,7 @@
       return $bool;
     }
 
-    public function getUserApps($id) {
+    public function getAppsByUserID($id) {
       $this -> cnx();
       $sql = 'SELECT * FROM `applications` WHERE `user_id` = :id_user';
       $request = $this -> openCnx -> prepare($sql);

@@ -15,18 +15,6 @@
       $this -> openCnx = $this -> cnx -> openConnexion();
     }
 
-    public function getUserByMail($email) {
-      $this -> cnx();
-      $sql = 'SELECT * FROM traductions.users 
-              WHERE BINARY `users`.`email` = :email';
-      $request = $this -> openCnx -> prepare($sql);
-      $request -> bindValue(':email', $email);
-      $request -> execute();
-      $data = $request -> fetch();
-      $this -> cnx -> closeConnexion();
-      return $data;
-    }
-
     public function insertUser($receiveData) {
       $this -> cnx();
       $sql = 'INSERT INTO `users` (`last_name`, `first_name`, `email`, `pwd`) 
@@ -40,6 +28,30 @@
       $this -> cnx -> closeConnexion();
       return $bool;
     }
+
+    public function getUserByMail($email) {
+      $this -> cnx();
+      $sql = 'SELECT * FROM traductions.users 
+              WHERE BINARY `users`.`email` = :email';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> bindValue(':email', $email);
+      $request -> execute();
+      $data = $request -> fetch();
+      $this -> cnx -> closeConnexion();
+      return $data;
+    }
+
+    public function getUserByID($id) {
+      $this -> cnx();
+      $sql = 'SELECT * FROM traductions.users 
+              WHERE BINARY `users`.`id_user` = :id_user';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> bindValue(':id_user', $id);
+      $request -> execute();
+      $data = $request -> fetch();
+      $this -> cnx -> closeConnexion();
+      return $data;
+    }    
 
   }
 

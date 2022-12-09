@@ -28,7 +28,6 @@ function checkUrlHash(urlHash, title) {
       }
     }, '300');
   }
-  console.log(title);
   if (urlHash == '#app_list') {
     return `List of your apps :`;
   }
@@ -139,14 +138,17 @@ function userApps(id_user) {
 
 // SUCCESS | FAILURE //
 function createAppSuccess(resp, displayMsg) {
-  console.log(resp.title);
-  displayMsg.innerHTML = `${resp.msg}`;
-  if (resp.msg == `New application correctly added!`) {
-    setTimeout(() => {
-      uploadAppIcon(resp.title);
-      sessionStorage.appTitle = resp.title;
-      console.log(sessionStorage.appTitle);
-    }, '1500');
+  if (resp.msg === undefined) {
+    displayMsg.innerHTML = `${resp}`;
+  }
+  else {
+    displayMsg.innerHTML = `${resp.msg}`;
+    if (resp.msg === `New application correctly added!`) {
+      setTimeout(() => {
+        uploadAppIcon(resp.title);
+        sessionStorage.appTitle = resp.title;
+      }, '1500');
+    }
   }
 }
 

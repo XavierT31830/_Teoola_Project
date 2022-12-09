@@ -2,6 +2,7 @@
 
   require ('../php_class/dao.users.class.php');
   require ('../php_class/dao.applications.class.php');
+  require ('../php_class/dao.roles.class.php');
   require ('../php_class/dao.relations.class.php');
 
   require ('back_security.php');
@@ -93,41 +94,50 @@
       $appdesc = security($receiveData -> appdesc);
       if (verifTitleApp($title) != 1) {
         $msg_insert = verifTitleApp($title);
+        echo json_encode($msg_insert);
       }
       else {
         $bool = $dao_app -> insertApp($receiveData);
         if ($bool) {
           $msg_insert = 'New application correctly added!';
+          // Now => create relation :
+          $dao_user = new DAO_users();
+          $dao_role = new DAO_roles();
+          $dao_relation = new DAO_relations();
+          $data = $dao_app -> getAppByTitle($title);
+          $user_infos = $dao_user -> getUserByID($data['user_id']);
+          $data['role_id'] = 1; // Auto-assign Admin/Owner rôle on app_creation
+          $role = $dao_role -> getRoleByID($data['role_id']);
+          $data['email'] = $user_infos['email'];
+          $data['role'] = $role['role'];
+          $data['msg'] = $msg_insert;
+          $relation = $dao_relation -> createAdminRelation($data);
+          if (!$relation) {
+            $delete = $dao_app -> deleteAppByID($data['id_app']);
+            if ($delete) {
+              $msg_insert = 'Error at application creation! Please try again...';
+            }
+            else {
+              $msg_insert = 'Unexpected error!!';
+            }
+            $data['msg'] = $msg_insert;
+            echo json_encode($data['msg']);
+          }
+          else {
+            echo json_encode($data);
+          }
         }
         else {
           $msg_insert = 'Application-Title already exists!';
+          echo json_encode($msg_insert);
         }
       }
-      $data = $dao_app -> getAppByTitle($title);
-      $data['msg'] = $msg_insert;
-      $data['role_id'] = 1; // Auto-assign : Admin/Owner rôle on app_creation
-      $dao_relation = new DAO_relations();
-      $relation = $dao_relation -> createAdminRelation($data);
-      if (!$relation) {
-        $msg_insert = 'Create relation...';
-        $delete = $dao_app -> deleteAppByID($data['id_app']);
-        if ($delete) {
-          $msg_insert = 'Error at application creation! Please try again...';
-        }
-        else {
-          $msg_insert = 'Unexpected error!!';
-        }
-        $data['msg'] = $msg_insert;
-        echo json_encode($data['msg']);
-      }
-      else {
-        echo json_encode($data);
-      }
+      
       break;
 
     case 'displayapps':
       $dao = new DAO_applications();
-      $data = $dao -> getUserApps($receiveData -> id_user);
+      $data = $dao -> getAppsByUserID($receiveData -> id_user);
       echo json_encode($data);
       break;
     
