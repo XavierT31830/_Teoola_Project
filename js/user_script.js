@@ -29,7 +29,7 @@ function checkUrlHash(urlHash, title) {
     }, '300');
   }
   if (urlHash == '#app_list') {
-    return `List of your apps :`;
+    return `${sessionStorage.fname}'s apps list`;
   }
   if (urlHash == '#app_list_refresh') {
     window.location.href = '#app_list';
@@ -130,10 +130,33 @@ function uploadAppIcon(data) {
 function userApps(id_user) {
   removeMainDisplay();
   let data = {};
-  let action = 'displayapps';
+  let action = 'getUserApps';
   let func = getUserAppsSuccess;
   data.id_user = id_user;
   sendCnxData(data, action, func);
+}
+
+function createAppsListeners(allApps) {
+  for (elt of allApps) {
+    let app = elt.id.split('_');
+    let idApp = app[1]
+    elt.addEventListener('click', () => manageApp(idApp));
+  }
+}
+
+function manageApp(idApp) {
+  removeMainDisplay();
+  window.location.href = '#manage_app';
+  let data = {};
+  let action = 'getApp';
+  let func = getAppSuccess;
+  data.id_app = idApp;
+  data.id_user = sessionStorage.id_user;
+  sendCnxData(data, action, func);
+}
+
+function displayApp(app) {
+  console.log(app);
 }
 
 // SUCCESS | FAILURE //
@@ -162,12 +185,15 @@ function getUserAppsSuccess(data, displayMsg) {
     let urlRefresh = window.location.hash;
     if (urlRefresh == '#app_list') {
       displayMsg.innerHTML = checkUrlHash(urlRefresh);
+      setTimeout(() => {
+        DefaultMsg.innerHTML = '';
+      }, '2500');
       window.location.href = '#app_list_refresh';
-      let container = `<div id='container' class='flex flex-row flex-wrap mx-auto max-w-fit'></div>`
+      let container = `<div id='container' class='flex flex-row flex-wrap mx-auto max-w-fit'><h2 class='text-2xl text-white font-semibold mb-4 whitespace-nowrap absolute top-28 right-1/2 left-auto'>LISTE DE VOS APPLICATIONS :</h2></div>`
       Main.innerHTML += container;
       for (app of data) {
         let divApp = `
-        <div class='mx-auto relative top-60' style='max-width: 600px; min-width: 500px;'>
+        <div class='mx-auto relative top-64' style='max-width: 600px; min-width: 500px;'>
           <div class='md:px-2 pt-4 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-row justify-center md:h-3/6 space-y-6 items-center'>
             <div class='md:bg-white md:shadow-lg md:rounded basis-10/12'>
               <div class='dark:bg-zinc-800 dark:text-white' style='min-height: 350px; max-height: 350px;'>
@@ -179,7 +205,7 @@ function getUserAppsSuccess(data, displayMsg) {
                     <div class='w-full flex flex-col space-y-5 pt-14'>
                       <div class='flex flex-col space-y-1 flex-1 relative pb-10'>${app.description}</div>
                       <div class='flex justify-center'>
-                        <input type='submit' id='contentApp' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value="Modifier l'application" />
+                        <input type='submit' id='appID_${app.id_app}' class='app_gestion cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value="Gérer l'application" />
                       </div>
                       <div id='displayAppMsg_${app.id_app}'></div>
                     </div>
@@ -193,11 +219,33 @@ function getUserAppsSuccess(data, displayMsg) {
         `;
         document.getElementById('container').innerHTML += divApp;
       }
+      let allApps = document.getElementsByClassName('app_gestion');
+      createAppsListeners(allApps);      
     }
   }
 }
 
-function displayUserAppsFail(error, displayMsg) {
-  displayMsg.innerHTML = `displayUserAppsFail(error)!`;
-  console.log(`${error}\ndisplayUserAppsFail(error)`);
+function getUserAppsFail(error, displayMsg) {
+  displayMsg.innerHTML = `getUserAppsFail(error)!`;
+  console.log(`${error}\ngetUserAppsFail(error)`);
+}
+
+function getAppSuccess(resp, displayMsg) {
+  if (resp.msg === undefined) {
+    displayMsg.innerHTML = `${resp}`;
+  }
+  else {
+    displayMsg.innerHTML = `${resp.msg}`;
+    if (resp.msg === `App. getted!`) {
+      displayApp(resp);
+      setTimeout(() => {
+        DefaultMsg.innerHTML = '';
+      }, '1500');
+    }
+  }
+}
+
+function getAppFail(error, displayMsg) {
+  displayMsg.innerHTML = `getAppFail(error)!`;
+  console.log(`${error}\ngetAppFail(error)`);
 }

@@ -235,8 +235,13 @@ function sendCnxData(formData, action, func) {
       displayMsg = CreateAppMsg;
       break;
 
-    case 'displayapps':
-      failure = displayUserAppsFail;
+    case 'getUserApps':
+      failure = getUserAppsFail;
+      displayMsg = DefaultMsg;
+      break;
+
+    case 'getApp':
+      failure = getAppFail;
       displayMsg = DefaultMsg;
       break;
   

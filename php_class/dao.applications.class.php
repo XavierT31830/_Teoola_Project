@@ -51,6 +51,17 @@
       return $data;
     }
 
+    public function getAppByID($id) {
+      $this -> cnx();
+      $sql = 'SELECT * FROM `applications` WHERE `id_app` = :id';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> bindValue(':id', $id);
+      $request -> execute();
+      $data = $request -> fetch();
+      $this -> cnx -> closeConnexion();
+      return $data;
+    }
+
     public function deleteAppByID($id) {
       $this -> cnx();
       $sql = 'DELETE FROM `applications` WHERE `id_app` = :id_app';

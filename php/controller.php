@@ -13,6 +13,7 @@
   $action = $receiveData -> action;
 
   switch ($action) {
+    // LOGIN
     case 'logIn':
       $dao = new DAO_users();
       $email = $receiveData -> email;
@@ -42,6 +43,7 @@
       echo json_encode($msg_insert);
       break;
 
+    // SIGNUP
     case 'signUp':
       $dao = new DAO_users();
       $lastname = $receiveData -> lastname;
@@ -88,29 +90,30 @@
       echo json_encode($msg_insert);
       break;
 
+    // CREATE APPLICATION
     case 'createapp':
       $dao_app = new DAO_applications();
       $title = security($receiveData -> title);
       $appdesc = security($receiveData -> appdesc);
       if (verifTitleApp($title) != 1) {
         $msg_insert = verifTitleApp($title);
-        echo json_encode($msg_insert);
       }
       else {
         $bool = $dao_app -> insertApp($receiveData);
-        if ($bool) {
-          $msg_insert = 'New application correctly added!';
+        if (!$bool) {
+          $msg_insert = 'Application-Title already exists!';
+        }
+        else {
           // Now => create relation :
           $dao_user = new DAO_users();
           $dao_role = new DAO_roles();
           $dao_relation = new DAO_relations();
           $data = $dao_app -> getAppByTitle($title);
           $user_infos = $dao_user -> getUserByID($data['user_id']);
-          $data['role_id'] = 1; // Auto-assign Admin/Owner rôle on app_creation
+          $data['role_id'] = 1; // Auto-assign to Admin/Owner rôle on app_creation
           $role = $dao_role -> getRoleByID($data['role_id']);
           $data['email'] = $user_infos['email'];
           $data['role'] = $role['role'];
-          $data['msg'] = $msg_insert;
           $relation = $dao_relation -> createAdminRelation($data);
           if (!$relation) {
             $delete = $dao_app -> deleteAppByID($data['id_app']);
@@ -120,25 +123,38 @@
             else {
               $msg_insert = 'Unexpected error!!';
             }
-            $data['msg'] = $msg_insert;
-            echo json_encode($data['msg']);
           }
           else {
+            $msg_insert = 'New application correctly added!';
+            $data['msg'] = $msg_insert;
             echo json_encode($data);
+            exit;
           }
         }
-        else {
-          $msg_insert = 'Application-Title already exists!';
-          echo json_encode($msg_insert);
-        }
       }
-      
+      echo json_encode($msg_insert);
       break;
 
-    case 'displayapps':
+    // DISPLAY USER APPLICATIONS BY USER_ID
+    case 'getUserApps':
       $dao = new DAO_applications();
       $data = $dao -> getAppsByUserID($receiveData -> id_user);
       echo json_encode($data);
+      break;
+
+    // GET APP BY APP_ID
+    case 'getApp':
+      $dao = new DAO_applications();
+      $data = $dao -> getAppByID($receiveData -> id_app);
+      if ($data) {
+        $msg_insert = 'App. getted!';
+        $data['msg'] = $msg_insert;
+        echo json_encode($data);
+      }
+      else {
+        $msg_insert = 'Error on getting app!';
+        echo json_encode($msg_insert);
+      }
       break;
     
     default:
