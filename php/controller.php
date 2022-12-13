@@ -156,6 +156,33 @@
         echo json_encode($msg_insert);
       }
       break;
+
+    // GET ROLES
+    case 'getRoles':
+      $dao = new DAO_roles();
+      $data = $dao -> getRoles();
+      if ($data) {
+        $msg_insert = 'Roles getted!';
+        $data['msg'] = $msg_insert;
+        echo json_encode($data);
+      }
+      else {
+        $msg_insert = 'Error on getting roles!';
+      }
+      break;
+
+    case 'getUsers':
+      $dao = new DAO_users();
+      $data = $dao -> getUsers();
+      if ($data) {
+        $msg_insert = 'Users getted!';
+        $data['msg'] = $msg_insert;
+        echo json_encode($data);
+      }
+      else {
+        $msg_insert = 'Error on getting users!';
+      }
+      break;
     
     default:
       # code...

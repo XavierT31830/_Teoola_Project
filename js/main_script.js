@@ -21,6 +21,7 @@ refreshDisplay();
 
 // REFRESH DISPLAY //
 function refreshDisplay() {
+  removeMainDisplay();
   if (sessionStorage.id_user !== undefined) {
     CnxLogIn.classList.toggle('hidden');
     CnxLogIn.classList.toggle('block');
@@ -172,10 +173,28 @@ function displayInscription() {
 
 // TOOLS //
 function removeMainDisplay() {
+  console.log(window.location.hash);
   DefaultMsg.innerHTML = '';
-  while (Main.firstChild) {
-    Main.removeChild(Main.lastChild);
-  };
+  if (sessionStorage.id_app && window.location.hash !== '#manage_app') {
+    sessionStorage.removeItem('id_app');
+  }
+  if (sessionStorage.id_app && window.location.hash === '#manage_app') {
+    getApp(sessionStorage.id_app);
+  }
+  if (window.location.hash !== '') {
+    while (Main.firstChild) {
+      Main.removeChild(Main.lastChild);
+    };
+  }  
+}
+
+function getApp(idApp) {
+  let data = {};
+  let action = 'getApp';
+  let func = getAppSuccess;
+  data.id_app = idApp;
+  data.id_user = sessionStorage.id_user;
+  sendCnxData(data, action, func);
 }
 
 function toggleIfConnexion() {
@@ -244,6 +263,16 @@ function sendCnxData(formData, action, func) {
       failure = getAppFail;
       displayMsg = DefaultMsg;
       break;
+
+    case 'getRoles':
+      failure = getRolesFail;
+      displayMsg = DefaultMsg;
+      break;
+
+    case 'getUsers':
+      failure = getUsersFail;
+      displayMsg = DefaultMsg;
+      break;
   
     default:
       break;
@@ -299,4 +328,30 @@ function insertUserSuccess(resp, displayMsg) {
 function insertUserFail(error, displayMsg) {
   displayMsg.innerHTML = `insertUserFail(error)!`;
   console.log(`${error}\ninsertUserFail(error)`);
+}
+
+function getAppSuccess(resp, displayMsg) {
+  if (resp.msg === undefined) {
+    displayMsg.innerHTML = `${resp}`;
+  }
+  else {
+    displayMsg.innerHTML = `${resp.msg}`;
+    if (resp.msg === `App. getted!`) {
+      setTimeout(() => {
+        DefaultMsg.innerHTML = '';
+      }, '1500');
+      if (window.location.hash == '#manage_app') {
+        sessionStorage.id_app = resp.id_app;
+        return manageApp(resp, undefined, undefined);
+      }
+      else {
+        return resp;
+      }
+    }
+  }
+}
+
+function getAppFail(error, displayMsg) {
+  displayMsg.innerHTML = `getAppFail(error)!`;
+  console.log(`${error}\ngetAppFail(error)`);
 }

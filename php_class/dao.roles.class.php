@@ -26,6 +26,16 @@ require_once ('cnx.class.php');
       return $data;
     }
 
+    public function getRoles() {
+      $this -> cnx();
+      $sql = 'SELECT * FROM `roles`';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> execute();
+      $data = $request -> fetchAll();
+      $this -> cnx -> closeConnexion();
+      return $data;
+    }
+
   }
 
 ?>

@@ -4,6 +4,8 @@ CreateApp.addEventListener('click', () => createApplication());
 
 const UrlHash = window.location.hash;
 let title;
+let Data = '';
+let DataRoles = '';
 
 checkUrlHash(UrlHash, title);
 
@@ -38,6 +40,7 @@ function checkUrlHash(urlHash, title) {
 }
 
 function createApplication() {
+  window.location.hash = '#create_app';
   removeMainDisplay();
 
   Main.innerHTML = `
@@ -128,6 +131,7 @@ function uploadAppIcon(data) {
 }
 
 function userApps(id_user) {
+  window.location.hash = '#app_list';
   removeMainDisplay();
   let data = {};
   let action = 'getUserApps';
@@ -140,23 +144,90 @@ function createAppsListeners(allApps) {
   for (elt of allApps) {
     let app = elt.id.split('_');
     let idApp = app[1]
-    elt.addEventListener('click', () => manageApp(idApp));
+    elt.addEventListener('click', () => manageApp(idApp, undefined, undefined));
   }
 }
 
-function manageApp(idApp) {
-  removeMainDisplay();
-  window.location.href = '#manage_app';
+function manageApp(data, dataRoles, dataUsers) {
+  if (window.location.hash !== '#manage_app' && dataRoles === undefined && dataUsers === undefined) {
+    removeMainDisplay();
+    window.location.href = '#manage_app';
+    getApp(data);
+  }
+  else if (window.location.hash == '#manage_app' && dataRoles === undefined && dataUsers === undefined) {
+    Data = data;
+    getRoles();
+  }
+  else if (window.location.hash === '#manage_app' && dataRoles !== undefined && dataUsers === undefined) {
+    console.log('on avance');
+    DataRoles = dataRoles;
+    console.log(DataRoles);
+    getUsers();
+  }
+  else if (window.location.hash === '#manage_app' && dataRoles !== undefined && dataUsers !== undefined) {
+    console.log('ON Y EST !!');
+    console.log(dataUsers);
+    let appContainer = `
+    <div id='container' class='dark:bg-zinc-800 dark:text-white mx-auto py-8 relative top-36 flex flex-col justify-center items-center' style='max-width: 1000px; min-width: 800px;'>
+      <h3 class='text-white font-bold text-2xl font-semibold mb-4 whitespace-nowrap'>Application : ${data.title}</h3>
+      <div class='md:flex md:pt-8 md:px-0 px-6 justify-center'>
+            
+        <form id='manage-app' action='manage' class='md:px-16 px-2 md:py-3 py-12 md:w-fill' method='POST'>
+          <div class="w-full flex flex-col space-y-5">
+            <div class='flex flex-col space-y-1 flex-1 relative'>
+              <label for='title' class='font-semibold'>Changer le titre</label>
+              <textarea name='title' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='1' REQUIRED>${data.title}</textarea>
+            </div>
+            <div class='flex flex-col space-y-1 flex-1 relative'>
+              <label for='description' class='font-semibold'>Changer la description</label>
+              <textarea name='description' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='1' REQUIRED>${data.description}</textarea>
+            </div>
+            <div class='flex flex-col space-y-1 flex-1 relative'>
+              <label for='content' class='font-semibold'>Contenu</label>
+              <textarea name='content' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='1' REQUIRED>${data.content}</textarea>
+            </div>
+            <div class='flex flex-col space-y-1 flex-1 relative'>
+              <label for='role' class='font-semibold'>Choisir un rôle à assigner</label>
+              <select type='select' name='role' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' min-length='8' max-length='50'>
+                <option value=''>-- Choose a Role --</option>
+                <option value=''>Administrator</option>
+                <option value=''>Redactor</option>
+              </select>
+            </div>
+            <div class='mb-4'>
+              <label for='pwdConfirm' class='mb-2 flex justify-between items-center'>
+                <span class='font-semibold'>Confirmez le mot de passe</span>
+              </label>
+              <div class='relative flex flex-col'>
+                <input type='password' name='pwdConfirm' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Confirm Password' min-length='8' max-length='50' REQUIRED />
+              </div>
+              <span class='text-xs'>8 carac. min & 50 max &nbsp;&nbsp; | &nbsp;&nbsp; 1 majuscule & 1 minuscule min &nbsp;&nbsp; | &nbsp;&nbsp; 1 carac. spéc. & 1 chiffre min</span>
+            </div>
+            <div class='flex justify-end'>
+              <input type='submit' id='signUpForm' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value='Inscription' />
+            </div>
+            <div id='signUpMsg'></div>
+          </div>
+        </form>
+
+      </div>
+    </div>`
+    Main.innerHTML += appContainer;
+  }
+}
+
+function getRoles() {
   let data = {};
-  let action = 'getApp';
-  let func = getAppSuccess;
-  data.id_app = idApp;
-  data.id_user = sessionStorage.id_user;
+  let action = 'getRoles';
+  let func = getRolesSuccess;
   sendCnxData(data, action, func);
 }
 
-function displayApp(app) {
-  console.log(app);
+function getUsers() {
+  let data = {};
+  let action = 'getUsers';
+  let func = getUsersSuccess;
+  sendCnxData(data, action, func);
 }
 
 // SUCCESS | FAILURE //
@@ -168,8 +239,8 @@ function createAppSuccess(resp, displayMsg) {
     displayMsg.innerHTML = `${resp.msg}`;
     if (resp.msg === `New application correctly added!`) {
       setTimeout(() => {
-        uploadAppIcon(resp.title);
         sessionStorage.appTitle = resp.title;
+        return uploadAppIcon(resp.title);
       }, '1500');
     }
   }
@@ -220,7 +291,7 @@ function getUserAppsSuccess(data, displayMsg) {
         document.getElementById('container').innerHTML += divApp;
       }
       let allApps = document.getElementsByClassName('app_gestion');
-      createAppsListeners(allApps);      
+      return createAppsListeners(allApps);      
     }
   }
 }
@@ -230,22 +301,56 @@ function getUserAppsFail(error, displayMsg) {
   console.log(`${error}\ngetUserAppsFail(error)`);
 }
 
-function getAppSuccess(resp, displayMsg) {
+function getRolesSuccess(resp, displayMsg) {
   if (resp.msg === undefined) {
     displayMsg.innerHTML = `${resp}`;
   }
   else {
-    displayMsg.innerHTML = `${resp.msg}`;
-    if (resp.msg === `App. getted!`) {
-      displayApp(resp);
+    setTimeout(() => {
+      displayMsg.innerHTML = `${resp.msg}`;
+    }, '1500');
+    if (resp.msg === `Roles getted!`) {
       setTimeout(() => {
-        DefaultMsg.innerHTML = '';
-      }, '1500');
+        displayMsg.innerHTML = '';
+      }, '3100');
+      if (window.location.hash == '#manage_app') {
+        manageApp(Data, resp, undefined);
+      }
+      else {
+        return resp;
+      }
     }
   }
 }
 
-function getAppFail(error, displayMsg) {
-  displayMsg.innerHTML = `getAppFail(error)!`;
-  console.log(`${error}\ngetAppFail(error)`);
+function getRolesFail(error, displayMsg) {
+  displayMsg.innerHTML = `getRolesSuccess(error)!`;
+  console.log(`${error}\ngetRolesSuccess(error)`);
+}
+
+function getUsersSuccess(resp, displayMsg) {
+  if (resp.msg === undefined) {
+    displayMsg.innerHTML = `${resp}`;
+  }
+  else {
+    setTimeout(() => {
+      displayMsg.innerHTML = `${resp.msg}`;
+    }, '1500');
+    if (resp.msg === `Users getted!`) {
+      setTimeout(() => {
+        displayMsg.innerHTML = '';
+      }, '4700');
+      if (window.location.hash == '#manage_app') {
+        manageApp(Data, DataRoles, resp);
+      }
+      else {
+        return resp;
+      }
+    }
+  }
+}
+
+function getUsersFail(error, displayMsg) {
+  displayMsg.innerHTML = `getUsersFail(error)!`;
+  console.log(`${error}\ngetUsersFail(error)`);
 }

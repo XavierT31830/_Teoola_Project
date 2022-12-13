@@ -51,7 +51,17 @@
       $data = $request -> fetch();
       $this -> cnx -> closeConnexion();
       return $data;
-    }    
+    }
+
+    public function getUsers() {
+      $this -> cnx();
+      $sql = 'SELECT `id_user`, `last_name`, `first_name`, `email` FROM `users`';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> execute();
+      $data = $request -> fetchAll();
+      $this -> cnx -> closeConnexion();
+      return $data;
+    }
 
   }
 
