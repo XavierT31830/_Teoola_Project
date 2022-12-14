@@ -72,6 +72,31 @@
       return $bool;
     }
 
+    public function getTitleApps() {
+      $this -> cnx();
+      $sql = 'SELECT `title` FROM `applications`';
+      $request = $this -> openCnx -> prepare($sql);
+      $request -> execute();
+      $data = $request -> fetchAll();
+      $this -> cnx -> closeConnexion();
+      return $data;
+    }
+
+    public function updateApp($receiveData) {
+      $this -> cnx();
+      $sql = 'UPDATE `applications` SET `title` = :title, `description` = :appdesc, `content` = :content WHERE `id_app` = :id_app';
+      $request = $this -> openCnx -> prepare($sql);
+      $data = array(
+        ':title' => $receiveData -> title,
+        ':appdesc' => $receiveData -> description,
+        ':content' => $receiveData -> content,
+        ':id_app' => $receiveData -> id_app,
+      );
+      $bool = $request -> execute($data);
+      $this -> cnx -> closeConnexion();
+      return $bool;
+    }
+
   }
 
 ?>

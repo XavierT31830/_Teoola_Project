@@ -36,7 +36,7 @@ function refreshDisplay() {
   }
 }
 
-// CONNEXION //
+// FUNCTIONS //
 function displayConnexion() {
   removeMainDisplay();
   toggleIfConnexion();
@@ -96,7 +96,6 @@ function displayConnexion() {
   });
 }
 
-// INSCRIPTION //
 function displayInscription() {
   removeMainDisplay();
   toggleIfInscription();
@@ -171,9 +170,17 @@ function displayInscription() {
   });
 }
 
+function getApp(idApp) {
+  let data = {};
+  let action = 'getApp';
+  let func = getAppSuccess;
+  data.id_app = idApp;
+  data.id_user = sessionStorage.id_user;
+  sendCnxData(data, action, func);
+}
+
 // TOOLS //
 function removeMainDisplay() {
-  console.log(window.location.hash);
   DefaultMsg.innerHTML = '';
   if (sessionStorage.id_app && window.location.hash !== '#manage_app') {
     sessionStorage.removeItem('id_app');
@@ -186,15 +193,6 @@ function removeMainDisplay() {
       Main.removeChild(Main.lastChild);
     };
   }  
-}
-
-function getApp(idApp) {
-  let data = {};
-  let action = 'getApp';
-  let func = getAppSuccess;
-  data.id_app = idApp;
-  data.id_user = sessionStorage.id_user;
-  sendCnxData(data, action, func);
 }
 
 function toggleIfConnexion() {
@@ -223,6 +221,12 @@ function toggleIfInscription() {
   }
 }
 
+function defineSessionStorage(data) {
+  sessionStorage.id_user = data.id_user;
+  sessionStorage.lname = data.last_name;
+  sessionStorage.fname = data.first_name;
+}
+
 // VERIF. BEFORE SENDING DATAS //
 function verifUserData(formData, action, func) {
   
@@ -234,44 +238,51 @@ function sendCnxData(formData, action, func) {
   formData.action = action;
   let failure;
   let displayMsg = null;
+  let failureReturn = returnDataFailure;
   const LogInMsg = document.getElementById('logInMsg');
   const SignUpMsg = document.getElementById('signUpMsg');
   const CreateAppMsg = document.getElementById('createAppMsg');
+  const ManageAppMsg = document.getElementById('manageAppMsg');
 
   switch (action) {
     case 'logIn':
-      failure = getUserByMailFail;
+      failure = `getUserByMailFail`;
       displayMsg = LogInMsg;
       break;
 
     case 'signUp':
-      failure = insertUserFail;
+      failure = `insertUserFail`;
       displayMsg = SignUpMsg;
       break;
 
-    case 'createapp':
-      failure = createAppFail;
+    case 'createApp':
+      failure = `${action}Fail`;
       displayMsg = CreateAppMsg;
       break;
 
     case 'getUserApps':
-      failure = getUserAppsFail;
+      failure = `${action}Fail`;
       displayMsg = DefaultMsg;
       break;
 
     case 'getApp':
-      failure = getAppFail;
+      failure = `${action}Fail`;
       displayMsg = DefaultMsg;
       break;
 
     case 'getRoles':
-      failure = getRolesFail;
+      failure = `${action}Fail`;
       displayMsg = DefaultMsg;
       break;
 
     case 'getUsers':
-      failure = getUsersFail;
+      failure = `${action}Fail`;
       displayMsg = DefaultMsg;
+      break;
+
+    case 'manageApp':
+      failure = `${action}Fail`;
+      displayMsg = ManageAppMsg;
       break;
   
     default:
@@ -286,17 +297,10 @@ function sendCnxData(formData, action, func) {
   fetch('./php/controller.php', fetchData)
   .then((resp) => resp.json())
   .then((resp) => func(resp, displayMsg))
-  .catch((error) => failure(error, displayMsg))
+  .catch((error) => failureReturn(error, displayMsg, failure))
 }
 
-// DEFINE SESSION STORAGE //
-function defineSessionStorage(data) {
-  sessionStorage.id_user = data.id_user;
-  sessionStorage.lname = data.last_name;
-  sessionStorage.fname = data.first_name;
-}
-
-// SUCCESS | FAILURE //
+// SUCCESS //
 function getUserByMailSuccess(resp, displayMsg) {
   if (typeof resp === 'string' || resp instanceof String) {
     displayMsg.innerHTML = `${resp}`;
@@ -311,11 +315,6 @@ function getUserByMailSuccess(resp, displayMsg) {
   }
 }
 
-function getUserByMailFail(error, displayMsg) {
-  displayMsg.innerHTML = `getUserByMailFail(error)!`;
-  console.log(`${error}\ngetUserByMailFail(error)`);
-}
-
 function insertUserSuccess(resp, displayMsg) {
   displayMsg.innerHTML = `${resp}`;
   if (resp == `New user correctly registered!`) {
@@ -323,11 +322,6 @@ function insertUserSuccess(resp, displayMsg) {
       displayConnexion();
     }, '1500');
   }
-}
-
-function insertUserFail(error, displayMsg) {
-  displayMsg.innerHTML = `insertUserFail(error)!`;
-  console.log(`${error}\ninsertUserFail(error)`);
 }
 
 function getAppSuccess(resp, displayMsg) {
@@ -351,7 +345,8 @@ function getAppSuccess(resp, displayMsg) {
   }
 }
 
-function getAppFail(error, displayMsg) {
-  displayMsg.innerHTML = `getAppFail(error)!`;
-  console.log(`${error}\ngetAppFail(error)`);
+// FAILURE GENERIC //
+function returnDataFailure(error, displayMsg, failure) {
+  displayMsg.innerHTML = `${failure}(error)!`;
+  console.log(`${error}\n${failure}(error)`);
 }

@@ -91,7 +91,7 @@
       break;
 
     // CREATE APPLICATION
-    case 'createapp':
+    case 'createApp':
       $dao_app = new DAO_applications();
       $title = security($receiveData -> title);
       $appdesc = security($receiveData -> appdesc);
@@ -171,6 +171,7 @@
       }
       break;
 
+    // GET USERS
     case 'getUsers':
       $dao = new DAO_users();
       $data = $dao -> getUsers();
@@ -182,6 +183,25 @@
       else {
         $msg_insert = 'Error on getting users!';
       }
+      break;
+
+    // MANAGE APP
+    case 'manageApp':
+      $dao_app = new DAO_applications();
+      $dao_role = new DAO_roles();
+      $dao_user = new DAO_users();
+      $dao_relation = new DAO_relations();
+      $title = $receiveData -> title;
+      $titleApps = $dao_app -> getTitleApps();
+      for ($i = 0; $i <= count($titleApps) - 1 ; $i++) {
+        if ($title === $titleApps[$i]['title']) {
+          $msg_insert = 'This Title already exists!';
+          echo json_encode($msg_insert);
+          break 1;
+        }
+      }
+      
+
       break;
     
     default:

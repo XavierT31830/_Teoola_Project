@@ -1,14 +1,13 @@
 
-AppList.addEventListener('click', () => userApps(sessionStorage.id_user));
-CreateApp.addEventListener('click', () => createApplication());
+AppList.addEventListener('click', () => getUserApps(sessionStorage.id_user));
+CreateApp.addEventListener('click', () => createApp());
 
 const UrlHash = window.location.hash;
 let title;
-let Data = '';
-let DataRoles = '';
 
 checkUrlHash(UrlHash, title);
 
+// CHECK URL HASH //
 function checkUrlHash(urlHash, title) {
   if (urlHash == '#appcreated' || urlHash == '#uploaderrors' || urlHash == '#uploadfail') {
     title = sessionStorage.appTitle;
@@ -35,11 +34,12 @@ function checkUrlHash(urlHash, title) {
   }
   if (urlHash == '#app_list_refresh') {
     window.location.href = '#app_list';
-    userApps(sessionStorage.id_user);
+    getUserApps(sessionStorage.id_user);
   }
 }
 
-function createApplication() {
+// FUNCTIONS //
+function createApp() {
   window.location.hash = '#create_app';
   removeMainDisplay();
 
@@ -53,7 +53,7 @@ function createApplication() {
         <div class='dark:bg-zinc-800 dark:text-white'>
           <div class='md:flex md:py-8 md:px-0 px-6 justify-center'>
 
-            <form id='form-create-app' action='createapp' class='md:px-16 px-2 md:py-3 py-12 md:w-3/4' method='POST'>
+            <form id='form-create-app' action='createApp' class='md:px-16 px-2 md:py-3 py-12 md:w-3/4' method='POST'>
             <h2 class='text-2xl font-semibold mb-4 whitespace-nowrap pb-7'>Créer une nouvelle application :</h2>
                 <div class='mb-4'>
                   <div class='relative flex flex-col'>
@@ -68,7 +68,7 @@ function createApplication() {
                   </div>
                 </div>
                 <div class='flex justify-end pt-7'>
-                  <input type='submit' id='createappform' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value="Créer l'application" />
+                  <input type='submit' id='createAppForm' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value="Créer l'application" />
                 </div>
                 <div id='createAppMsg'></div>
               </div>
@@ -86,7 +86,7 @@ function createApplication() {
 
   document.getElementById('form-create-app').addEventListener('submit', function (e) {
     e.preventDefault();
-    action = 'createapp';
+    action = 'createApp';
     func = createAppSuccess;
     let data = new FormData(e.target).entries();
     let formData = Object.fromEntries(data);
@@ -95,6 +95,33 @@ function createApplication() {
   });
 }
 
+function getUserApps(id_user) {
+  window.location.hash = '#app_list';
+  removeMainDisplay();
+  let data = {};
+  let action = 'getUserApps';
+  let func = getUserAppsSuccess;
+  data.id_user = id_user;
+  sendCnxData(data, action, func);
+}
+
+
+
+function getRoles() {
+  let data = {};
+  let action = 'getRoles';
+  let func = getRolesSuccess;
+  sendCnxData(data, action, func);
+}
+
+function getUsers() {
+  let data = {};
+  let action = 'getUsers';
+  let func = getUsersSuccess;
+  sendCnxData(data, action, func);
+}
+
+// TOOLS //
 function uploadAppIcon(data) {
   removeMainDisplay();
 
@@ -130,16 +157,6 @@ function uploadAppIcon(data) {
   `;    
 }
 
-function userApps(id_user) {
-  window.location.hash = '#app_list';
-  removeMainDisplay();
-  let data = {};
-  let action = 'getUserApps';
-  let func = getUserAppsSuccess;
-  data.id_user = id_user;
-  sendCnxData(data, action, func);
-}
-
 function createAppsListeners(allApps) {
   for (elt of allApps) {
     let app = elt.id.split('_');
@@ -148,89 +165,7 @@ function createAppsListeners(allApps) {
   }
 }
 
-function manageApp(data, dataRoles, dataUsers) {
-  if (window.location.hash !== '#manage_app' && dataRoles === undefined && dataUsers === undefined) {
-    removeMainDisplay();
-    window.location.href = '#manage_app';
-    getApp(data);
-  }
-  else if (window.location.hash == '#manage_app' && dataRoles === undefined && dataUsers === undefined) {
-    Data = data;
-    getRoles();
-  }
-  else if (window.location.hash === '#manage_app' && dataRoles !== undefined && dataUsers === undefined) {
-    console.log('on avance');
-    DataRoles = dataRoles;
-    console.log(DataRoles);
-    getUsers();
-  }
-  else if (window.location.hash === '#manage_app' && dataRoles !== undefined && dataUsers !== undefined) {
-    console.log('ON Y EST !!');
-    console.log(dataUsers);
-    let appContainer = `
-    <div id='container' class='dark:bg-zinc-800 dark:text-white mx-auto py-8 relative top-36 flex flex-col justify-center items-center' style='max-width: 1000px; min-width: 800px;'>
-      <h3 class='text-white font-bold text-2xl font-semibold mb-4 whitespace-nowrap'>Application : ${data.title}</h3>
-      <div class='md:flex md:pt-8 md:px-0 px-6 justify-center'>
-            
-        <form id='manage-app' action='manage' class='md:px-16 px-2 md:py-3 py-12 md:w-fill' method='POST'>
-          <div class="w-full flex flex-col space-y-5">
-            <div class='flex flex-col space-y-1 flex-1 relative'>
-              <label for='title' class='font-semibold'>Changer le titre</label>
-              <textarea name='title' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='1' REQUIRED>${data.title}</textarea>
-            </div>
-            <div class='flex flex-col space-y-1 flex-1 relative'>
-              <label for='description' class='font-semibold'>Changer la description</label>
-              <textarea name='description' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='1' REQUIRED>${data.description}</textarea>
-            </div>
-            <div class='flex flex-col space-y-1 flex-1 relative'>
-              <label for='content' class='font-semibold'>Contenu</label>
-              <textarea name='content' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='1' REQUIRED>${data.content}</textarea>
-            </div>
-            <div class='flex flex-col space-y-1 flex-1 relative'>
-              <label for='role' class='font-semibold'>Choisir un rôle à assigner</label>
-              <select type='select' name='role' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' min-length='8' max-length='50'>
-                <option value=''>-- Choose a Role --</option>
-                <option value=''>Administrator</option>
-                <option value=''>Redactor</option>
-              </select>
-            </div>
-            <div class='mb-4'>
-              <label for='pwdConfirm' class='mb-2 flex justify-between items-center'>
-                <span class='font-semibold'>Confirmez le mot de passe</span>
-              </label>
-              <div class='relative flex flex-col'>
-                <input type='password' name='pwdConfirm' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Confirm Password' min-length='8' max-length='50' REQUIRED />
-              </div>
-              <span class='text-xs'>8 carac. min & 50 max &nbsp;&nbsp; | &nbsp;&nbsp; 1 majuscule & 1 minuscule min &nbsp;&nbsp; | &nbsp;&nbsp; 1 carac. spéc. & 1 chiffre min</span>
-            </div>
-            <div class='flex justify-end'>
-              <input type='submit' id='signUpForm' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value='Inscription' />
-            </div>
-            <div id='signUpMsg'></div>
-          </div>
-        </form>
-
-      </div>
-    </div>`
-    Main.innerHTML += appContainer;
-  }
-}
-
-function getRoles() {
-  let data = {};
-  let action = 'getRoles';
-  let func = getRolesSuccess;
-  sendCnxData(data, action, func);
-}
-
-function getUsers() {
-  let data = {};
-  let action = 'getUsers';
-  let func = getUsersSuccess;
-  sendCnxData(data, action, func);
-}
-
-// SUCCESS | FAILURE //
+// SUCCESS //
 function createAppSuccess(resp, displayMsg) {
   if (resp.msg === undefined) {
     displayMsg.innerHTML = `${resp}`;
@@ -244,11 +179,6 @@ function createAppSuccess(resp, displayMsg) {
       }, '1500');
     }
   }
-}
-
-function createAppFail(error, displayMsg) {
-  displayMsg.innerHTML = `createAppFail(error)!`;
-  console.log(`${error}\ncreateAppFail(error)`);
 }
 
 function getUserAppsSuccess(data, displayMsg) {
@@ -296,11 +226,6 @@ function getUserAppsSuccess(data, displayMsg) {
   }
 }
 
-function getUserAppsFail(error, displayMsg) {
-  displayMsg.innerHTML = `getUserAppsFail(error)!`;
-  console.log(`${error}\ngetUserAppsFail(error)`);
-}
-
 function getRolesSuccess(resp, displayMsg) {
   if (resp.msg === undefined) {
     displayMsg.innerHTML = `${resp}`;
@@ -323,11 +248,6 @@ function getRolesSuccess(resp, displayMsg) {
   }
 }
 
-function getRolesFail(error, displayMsg) {
-  displayMsg.innerHTML = `getRolesSuccess(error)!`;
-  console.log(`${error}\ngetRolesSuccess(error)`);
-}
-
 function getUsersSuccess(resp, displayMsg) {
   if (resp.msg === undefined) {
     displayMsg.innerHTML = `${resp}`;
@@ -348,9 +268,4 @@ function getUsersSuccess(resp, displayMsg) {
       }
     }
   }
-}
-
-function getUsersFail(error, displayMsg) {
-  displayMsg.innerHTML = `getUsersFail(error)!`;
-  console.log(`${error}\ngetUsersFail(error)`);
 }
