@@ -17,15 +17,12 @@
 
     public function createAdminRelation($receiveData) {
       $this -> cnx();
-      $sql = 'INSERT INTO `relation_app_users` (`app_id`, `app_title`, `user_id`, `user_email`, `role_id`, `role_role`) VALUES (:id_app, :app_title, :id_user, :user_email, :id_role, :role_role)';
+      $sql = 'INSERT INTO `relation_app_users_roles` (`app_id`, `user_id`, `role_id`) VALUES (:id_app, :id_user, :id_role)';
       $request = $this -> openCnx -> prepare($sql);
       $data = array(
         ':id_app' => $receiveData['id_app'],
-        ':app_title' => $receiveData['title'],
         ':id_user' => $receiveData['user_id'],
-        ':user_email' => $receiveData['email'],
         ':id_role' => $receiveData['role_id'],
-        ':role_role' => $receiveData['role'],
       );
       $bool = $request -> execute($data);
       $this -> cnx -> closeConnexion();

@@ -34,7 +34,6 @@
         else {
           echo "An error occurred. Please contact the administrator.";
           sleep(1);
-          
           header('location:../#uploadfail');
         }
       } 

@@ -64,7 +64,7 @@ function createApp() {
                 <div class='mb-4'>
                   <div class='relative flex flex-col pt-7'>
                     <label for='appdesc' class='font-semibold'>Descriptif de l'application</label>
-                    <textarea name='appdesc' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='3' cols='33' REQUIRED >Description</textarea>
+                    <textarea name='appdesc' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='3' cols='33' min-length='2' REQUIRED >Description</textarea>
                   </div>
                 </div>
                 <div class='flex justify-end pt-7'>
@@ -104,8 +104,6 @@ function getUserApps(id_user) {
   data.id_user = id_user;
   sendCnxData(data, action, func);
 }
-
-
 
 function getRoles() {
   let data = {};
@@ -182,6 +180,7 @@ function createAppSuccess(resp, displayMsg) {
 }
 
 function getUserAppsSuccess(data, displayMsg) {
+  console.log(data);
   if (data != null || data != undefined) {
     let urlRefresh = window.location.hash;
     if (urlRefresh == '#app_list') {
@@ -190,38 +189,30 @@ function getUserAppsSuccess(data, displayMsg) {
         DefaultMsg.innerHTML = '';
       }, '2500');
       window.location.href = '#app_list_refresh';
-      let container = `<div id='container' class='flex flex-row flex-wrap mx-auto max-w-fit'><h2 class='text-2xl text-white font-semibold mb-4 whitespace-nowrap absolute top-28 right-1/2 left-auto'>LISTE DE VOS APPLICATIONS :</h2></div>`
+      let container = `<div id='container' class='flex flex-row flex-wrap mx-auto min-w-full'><h2 class='text-2xl text-white font-semibold mb-4 whitespace-nowrap absolute top-28 right-1/2 left-auto'>LISTE DE VOS APPLICATIONS :</h2></div>`
       Main.innerHTML += container;
       for (app of data) {
         let divApp = `
-        <div class='mx-auto relative top-64' style='max-width: 600px; min-width: 500px;'>
-          <div class='md:px-2 pt-4 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-row justify-center md:h-3/6 space-y-6 items-center'>
-            <div class='md:bg-white md:shadow-lg md:rounded basis-10/12'>
-              <div class='dark:bg-zinc-800 dark:text-white' style='min-height: 350px; max-height: 350px;'>
-                <div class='md:flex md:py-8 md:px-4 px-6 justify-center'>
+        <div class='mx-auto relative top-48 flex flex-col min-w-full items-center'>
 
-                  <div class='md:px-auto px-2 md:border-b-0 border-b'>
-                    <h3 class='text-2xl font-semibold mb-4 whitespace-nowrap'>${app.title}
-                    </h3>
-                    <div class='w-full flex flex-col space-y-5 pt-14'>
-                      <div class='flex flex-col space-y-1 flex-1 relative pb-10'>${app.description}</div>
-                      <div class='flex justify-center'>
-                        <input type='submit' id='appID_${app.id_app}' class='app_gestion cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value="Gérer l'application" />
-                      </div>
-                      <div id='displayAppMsg_${app.id_app}'></div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
+          <div class='dark:bg-zinc-800 dark:text-white px-2 md:border-b-0 border-b md:flex py-4 w-10/12 mb-2'>
+            <img width='100' heigth ='100' src=${app.img_link} alt='app_icon'>
+            <a href=${app.title} class='text-2xl font-semibold pl-4 whitespace-nowrap w-1/4'><h3>${app.title}
+            </h3></a>
+            <div class='flex-1 relative text-start w-1/3'>${app.description}</div>
+            <div class='flex-1 relative text-center italic w-1/4'>Created at</br>${app.created_at}</div>
+            <div class='flex flex-1 justify-end'>
+              <input type='submit' id='appID_${app.id_app}' class='app_gestion cursor-pointer px-4 py-2 rounded flex flex-col space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value="Gérer l'application" />
             </div>
+            <div id='displayAppMsg_${app.id_app}'></div>
           </div>
+
         </div>
         `;
         document.getElementById('container').innerHTML += divApp;
       }
       let allApps = document.getElementsByClassName('app_gestion');
-      return createAppsListeners(allApps);      
+      return createAppsListeners(allApps);
     }
   }
 }

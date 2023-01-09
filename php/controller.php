@@ -8,10 +8,19 @@
   require ('back_security.php');
   require ('verif_data.php');
 
-
   $receiveData = json_decode(file_get_contents('php://input'));
   $action = $receiveData -> action;
 
+  // FOLDERS STUFF //
+  $directory = dirname(__DIR__, 1);
+  $arrayDirectory = explode('\\', $directory);
+  $projectNameDirectory = end($arrayDirectory);
+  $folderSeparator = '/';
+  $imageFolder = 'uploads/';
+  $uploadImgDirectory = $directory . $folderSeparator . $imageFolder;
+  $imageDirectory = $projectNameDirectory . $folderSeparator . $imageFolder;
+
+  // THE BIG LEBOWSWITCH //
   switch ($action) {
     // LOGIN
     case 'logIn':
@@ -90,7 +99,7 @@
       echo json_encode($msg_insert);
       break;
 
-    // CREATE APPLICATION
+    // CREATE APP
     case 'createApp':
       $dao_app = new DAO_applications();
       $title = security($receiveData -> title);
@@ -105,15 +114,9 @@
         }
         else {
           // Now => create relation :
-          $dao_user = new DAO_users();
-          $dao_role = new DAO_roles();
           $dao_relation = new DAO_relations();
           $data = $dao_app -> getAppByTitle($title);
-          $user_infos = $dao_user -> getUserByID($data['user_id']);
           $data['role_id'] = 1; // Auto-assign to Admin/Owner rôle on app_creation
-          $role = $dao_role -> getRoleByID($data['role_id']);
-          $data['email'] = $user_infos['email'];
-          $data['role'] = $role['role'];
           $relation = $dao_relation -> createAdminRelation($data);
           if (!$relation) {
             $delete = $dao_app -> deleteAppByID($data['id_app']);
@@ -135,11 +138,33 @@
       echo json_encode($msg_insert);
       break;
 
-    // DISPLAY USER APPLICATIONS BY USER_ID
+    // DISPLAY USER APPS BY USER_ID
     case 'getUserApps':
       $dao = new DAO_applications();
       $data = $dao -> getAppsByUserID($receiveData -> id_user);
-      echo json_encode($data);
+      if ($data) {
+        $arrFiles = scandir($uploadImgDirectory);
+        $count = 0;
+        foreach ($arrFiles as $value) {
+          $splitValues = explode('.', $value);
+          if ($splitValues[1] !== '') {
+            $arrValues = $splitValues[0];
+            foreach ($data as $app) {
+              if ($app['title'] == $arrValues) {
+                $app['img_link'] = $imageFolder . $value;
+                $data[$count]['img_link'] = $app['img_link'];
+              }
+            }
+            $count++;
+          }
+        }
+        echo json_encode($data);
+      }
+      else {
+        $msg_insert = 'Folder doesn\'t exists!';
+        echo json_encode($msg_insert);
+      }
+
       break;
 
     // GET APP BY APP_ID
@@ -188,22 +213,35 @@
     // MANAGE APP
     case 'manageApp':
       $dao_app = new DAO_applications();
+
       $dao_role = new DAO_roles();
       $dao_user = new DAO_users();
       $dao_relation = new DAO_relations();
+
       $title = $receiveData -> title;
       $titleApps = $dao_app -> getTitleApps();
       for ($i = 0; $i <= count($titleApps) - 1 ; $i++) {
         if ($title === $titleApps[$i]['title']) {
           $msg_insert = 'This Title already exists!';
           echo json_encode($msg_insert);
-          break 1;
+          break 2;
         }
       }
+      if (verifTitleApp($title) != 1) {
+        $msg_insert = verifTitleApp($title);
+        echo json_encode($msg_insert);
+      }
+      else {
+        // $title OK
+        var_dump($receiveData);
+        $data = $dao_app -> updateApp($receiveData);
+      }
+      
       
 
       break;
     
+    // DEFAULT
     default:
       # code...
       break;
