@@ -19,9 +19,6 @@ function manageApp(data, dataRoles, dataUsers) {
     getUsers();
   }
   else if (window.location.hash === '#manage_app' && dataRoles !== undefined && dataUsers !== undefined) {
-    console.log(data);
-    console.log(dataRoles);
-    console.log(dataUsers);
     let roles = `<option value=''>-- Choose a Role --</option>`;
     let users = `<option value=''>-- Choose a Member --</option>`;
     for (elt in dataRoles) {
@@ -74,6 +71,7 @@ function manageApp(data, dataRoles, dataUsers) {
 
     let action = '';
     let func;
+    let old_title = `${data.title}`;
     document.getElementById('manage-app').addEventListener('submit', function (e) {
       e.preventDefault();
       action = 'manageApp';
@@ -81,6 +79,7 @@ function manageApp(data, dataRoles, dataUsers) {
       let data = new FormData(e.target).entries();
       let formData = Object.fromEntries(data);
       formData.id_app = sessionStorage.id_app;
+      formData.old_title = old_title;
       verifUserData(formData, action, func);
     });
   }
@@ -88,16 +87,18 @@ function manageApp(data, dataRoles, dataUsers) {
 
 // SUCCESS //
 function manageAppSuccess(resp, displayMsg) {
+  console.log(resp);
   if (resp.msg === undefined) {
     displayMsg.innerHTML = `${resp}`;
   }
   else {
     setTimeout(() => {
       displayMsg.innerHTML = `${resp.msg}`;
-    }, '1500');
+    }, '1000');
     if (resp.msg === `App. correctly modified!`) {
       setTimeout(() => {
         displayMsg.innerHTML = '';
+        location.reload();
       }, '3100');
       return resp;
     }

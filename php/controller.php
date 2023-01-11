@@ -5,20 +5,13 @@
   require ('../php_class/dao.roles.class.php');
   require ('../php_class/dao.relations.class.php');
 
+  require ('folders_stuff.php');
   require ('back_security.php');
   require ('verif_data.php');
+  require ('scandir_img_link.php');
 
   $receiveData = json_decode(file_get_contents('php://input'));
   $action = $receiveData -> action;
-
-  // FOLDERS STUFF //
-  $directory = dirname(__DIR__, 1);
-  $arrayDirectory = explode('\\', $directory);
-  $projectNameDirectory = end($arrayDirectory);
-  $folderSeparator = '/';
-  $imageFolder = 'uploads/';
-  $uploadImgDirectory = $directory . $folderSeparator . $imageFolder;
-  $imageDirectory = $projectNameDirectory . $folderSeparator . $imageFolder;
 
   // THE BIG LEBOWSWITCH //
   switch ($action) {
@@ -142,23 +135,8 @@
     case 'getUserApps':
       $dao = new DAO_applications();
       $data = $dao -> getAppsByUserID($receiveData -> id_user);
-      if ($data) {
-        $arrFiles = scandir($uploadImgDirectory);
-        $count = 0;
-        foreach ($arrFiles as $value) {
-          $splitValues = explode('.', $value);
-          if ($splitValues[1] !== '') {
-            $arrValues = $splitValues[0];
-            foreach ($data as $app) {
-              if ($app['title'] == $arrValues) {
-                $app['img_link'] = $imageFolder . $value;
-                $data[$count]['img_link'] = $app['img_link'];
-              }
-            }
-            $count++;
-          }
-        }
-        echo json_encode($data);
+      if ($data !== 'empty') {
+        echo json_encode(scanImgAppsDir($arrFiles, $imageFolder, $data));
       }
       else {
         $msg_insert = 'Folder doesn\'t exists!';
@@ -174,7 +152,7 @@
       if ($data) {
         $msg_insert = 'App. getted!';
         $data['msg'] = $msg_insert;
-        echo json_encode($data);
+        echo json_encode(getImgAppName($arrFiles, $imageFolder, $data));
       }
       else {
         $msg_insert = 'Error on getting app!';
@@ -213,12 +191,12 @@
     // MANAGE APP
     case 'manageApp':
       $dao_app = new DAO_applications();
-
       $dao_role = new DAO_roles();
       $dao_user = new DAO_users();
       $dao_relation = new DAO_relations();
 
       $title = $receiveData -> title;
+      $old_title = $receiveData -> old_title;
       $titleApps = $dao_app -> getTitleApps();
       for ($i = 0; $i <= count($titleApps) - 1 ; $i++) {
         if ($title === $titleApps[$i]['title']) {
@@ -232,13 +210,14 @@
         echo json_encode($msg_insert);
       }
       else {
-        // $title OK
-        var_dump($receiveData);
+        // $title is OK
         $data = $dao_app -> updateApp($receiveData);
+        $updateData = $dao_app -> getAppByID($receiveData -> id_app);
+        $updateData['old_title'] = $old_title;
+        $updateData['msg'] = 'App. correctly modified!';
+        echo json_encode(updateImgAppName($arrFiles, $imageFolder, $updateData));
       }
       
-      
-
       break;
     
     // DEFAULT

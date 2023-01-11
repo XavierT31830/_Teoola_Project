@@ -180,7 +180,6 @@ function createAppSuccess(resp, displayMsg) {
 }
 
 function getUserAppsSuccess(data, displayMsg) {
-  console.log(data);
   if (data != null || data != undefined) {
     let urlRefresh = window.location.hash;
     if (urlRefresh == '#app_list') {
@@ -224,11 +223,11 @@ function getRolesSuccess(resp, displayMsg) {
   else {
     setTimeout(() => {
       displayMsg.innerHTML = `${resp.msg}`;
-    }, '1500');
+    }, '1600');
     if (resp.msg === `Roles getted!`) {
       setTimeout(() => {
         displayMsg.innerHTML = '';
-      }, '3100');
+      }, '3000');
       if (window.location.hash == '#manage_app') {
         manageApp(Data, resp, undefined);
       }
@@ -246,7 +245,7 @@ function getUsersSuccess(resp, displayMsg) {
   else {
     setTimeout(() => {
       displayMsg.innerHTML = `${resp.msg}`;
-    }, '1500');
+    }, '3200');
     if (resp.msg === `Users getted!`) {
       setTimeout(() => {
         displayMsg.innerHTML = '';
