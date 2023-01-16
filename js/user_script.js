@@ -133,7 +133,7 @@ function uploadAppIcon(data) {
         <div class='dark:bg-zinc-800 dark:text-white'>
           <div class='md:flex md:py-8 md:px-0 px-6 justify-center'>
 
-            <form id='form-upload-app-icon' action='./php/upload.app.icon.php' class='md:px-16 px-2 md:py-3 py-12 md:w-3/4' method='POST' enctype='multipart/form-data'>
+            <form id='form-upload-app-icon' action='./php/upload_app_icon.php' class='md:px-16 px-2 md:py-3 py-12 md:w-3/4' method='POST' enctype='multipart/form-data'>
             <h2 class='text-2xl font-semibold mb-4 whitespace-nowrap'>Téléchargez votre icône :</h2>
               <div class='w-full flex flex-col space-y-5 pt-8'>
                 <div class='flex flex-col space-y-1 flex-1 relative pb-7'>
@@ -188,7 +188,19 @@ function getUserAppsSuccess(data, displayMsg) {
         DefaultMsg.innerHTML = '';
       }, '2500');
       window.location.href = '#app_list_refresh';
-      let container = `<div id='container' class='flex flex-row flex-wrap mx-auto min-w-full'><h2 class='text-2xl text-white font-semibold mb-4 whitespace-nowrap absolute top-28 right-1/2 left-auto'>LISTE DE VOS APPLICATIONS :</h2></div>`
+      let container = `
+      <div id='container' class='flex flex-row flex-wrap mx-auto min-w-full'>
+        <h2 class='text-2xl text-white font-semibold mb-4 whitespace-nowrap absolute top-28 right-1/2 left-auto'>LISTE DE VOS APPLICATIONS :</h2>
+        <div class='mx-auto relative top-48 flex flex-col min-w-full items-center'>
+          <div class='dark:bg-zinc-800 dark:text-white px-2 md:border-b-0 border-b md:flex py-4 w-10/12 mb-2'>
+            <span class='block text-lg text-center basis-1/2'>Titre de l'application</span>
+            <span class='block text-lg text-center basis-5/6'>Description de l'application</span>
+            <span class='block text-lg text-center basis-5/6'>Date de création</span>
+            <span class='block text-lg text-center basis-1/2'>Gestion</span>
+          </div>
+        </div>
+      </div>
+      `;
       Main.innerHTML += container;
       for (app of data) {
         let divApp = `
@@ -196,7 +208,7 @@ function getUserAppsSuccess(data, displayMsg) {
 
           <div class='dark:bg-zinc-800 dark:text-white px-2 md:border-b-0 border-b md:flex py-4 w-10/12 mb-2'>
             <img width='100' heigth ='100' src=${app.img_link} alt='app_icon'>
-            <a href=${app.title} class='text-2xl font-semibold pl-4 whitespace-nowrap w-1/4'><h3>${app.title}
+            <a href=${app.title} class='text-2xl font-semibold pl-4 whitespace-nowrap w-1/5'><h3>${app.title}
             </h3></a>
             <div class='flex-1 relative text-start w-1/3'>${app.description}</div>
             <div class='flex-1 relative text-center italic w-1/4'>Created at</br>${app.created_at}</div>
