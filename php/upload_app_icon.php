@@ -27,20 +27,17 @@
         $didUpload = move_uploaded_file($fileTempName, $uploadPath);
         if ($didUpload) {
           $confirm = "The file '" . basename($fileName) . "' has been correctly uploaded into : '" . $uploadPath . "' !";
-          var_dump($confirm);
-          sleep(1);
+          // var_dump($confirm);
           header('location:../#appcreated');
         }
         else {
           echo "An error occurred. Please contact the administrator.";
-          sleep(1);
           header('location:../#uploadfail');
         }
       } 
       else {
         foreach ($errors as $error) {
           echo "\nThese are the errors\n : " . $error;
-          sleep(1);
           header('location:../#uploaderrors');
         }
       }

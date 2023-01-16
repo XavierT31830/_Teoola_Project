@@ -108,23 +108,26 @@
         else {
           // Now => create relation :
           $dao_relation = new DAO_relations();
-          $data = $dao_app -> getAppByTitle($title);
+          $data = $dao_app -> getAppById(intVal($bool));
           $data['role_id'] = 1; // Auto-assign to Admin/Owner rôle on app_creation
           $relation = $dao_relation -> createAdminRelation($data);
           if (!$relation) {
             $delete = $dao_app -> deleteAppByID($data['id_app']);
             if ($delete) {
-              $msg_insert = 'Error at application creation! Please try again...';
+              $msg_insert = 'Error when creating relation! Application correctly deleted, please try again...';
             }
             else {
-              $msg_insert = 'Unexpected error!!';
+              $msg_insert = 'Error when creating relation, then, error on deleting application!!';
             }
           }
-          else {
+          else if ($relation) {
             $msg_insert = 'New application correctly added!';
             $data['msg'] = $msg_insert;
             echo json_encode($data);
             exit;
+          }
+          else {
+            $msg_insert = 'Fatal Error!!';
           }
         }
       }

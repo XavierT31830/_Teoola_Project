@@ -25,8 +25,14 @@
         ':appdesc' => $receiveData -> appdesc,
       );
       $bool = $request -> execute($data);
+      if ($bool) {
+        $result = $this -> openCnx -> lastInsertId();
+      }
+      else {
+        $result = $bool;
+      }
       $this -> cnx -> closeConnexion();
-      return $bool;
+      return $result;
     }
 
     public function getAppsByUserID($id) {
@@ -98,5 +104,3 @@
     }
 
   }
-
-?>
