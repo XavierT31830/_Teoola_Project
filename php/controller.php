@@ -217,7 +217,6 @@
         $updateData['msg'] = 'App. correctly modified!';
         echo json_encode(updateImgAppName($arrFiles, $imageFolder, $updateData));
       }
-      
       break;
     
     // DEFAULT
