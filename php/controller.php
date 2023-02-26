@@ -1,9 +1,9 @@
 <?php
 
-  require ('../php_class/dao.users.class.php');
-  require ('../php_class/dao.applications.class.php');
-  require ('../php_class/dao.roles.class.php');
-  require ('../php_class/dao.relations.class.php');
+  require ('../php_class/dao_users_class.php');
+  require ('../php_class/dao_applications_class.php');
+  require ('../php_class/dao_roles_class.php');
+  require ('../php_class/dao_relations_class.php');
 
   require ('folders_stuff.php');
   require ('back_security.php');
@@ -14,19 +14,17 @@
   $action = $receiveData -> action;
 
   switch ($action) {
-    // LOGIN
+    //-----------------------------------------------------------------------------------------------//
     case 'logIn':
       $msg_insert = logIn($receiveData, 'DAO_users', 'getUserByMail');
       echo json_encode($msg_insert);
       break;
     //-----------------------------------------------------------------------------------------------//
-    // SIGNUP
     case 'signUp':
       $msg_insert = signUp($receiveData, 'DAO_users', 'insertUser');
       echo json_encode($msg_insert);
       break;
     //-----------------------------------------------------------------------------------------------//
-    // CREATE APP
     case 'createApp':
       $dao_app = new DAO_applications();
       $title = security($receiveData -> title);
@@ -70,7 +68,6 @@
       echo json_encode($msg_insert);
       break;
     //-----------------------------------------------------------------------------------------------//
-    // DISPLAY USER APPS BY USER_ID
     case 'getUserApps':
       $data = dataById($receiveData, 'DAO_applications', 'getAppsByUserID', 'id_user');
       $msg = dataOrMsg($data, $action);
@@ -83,7 +80,6 @@
       }
       break;
     //-----------------------------------------------------------------------------------------------//
-    // GET APP BY APP_ID
     case 'getApp':
       $data = dataById($receiveData, 'DAO_applications', 'getAppByID', 'id_app');
       $msg = dataOrMsg($data, $action);
@@ -96,32 +92,29 @@
       }
       break;
     //-----------------------------------------------------------------------------------------------//
-    // GET ROLES
     case 'getRoles':
       $data = dataAll('DAO_roles', 'getRoles');
       $msg_insert = dataOrMsg($data, $action);
       echo json_encode($msg_insert);
       break;
     //-----------------------------------------------------------------------------------------------//
-    // GET USERS
     case 'getUsers':
       $data = dataAll('DAO_users', 'getUsers');
       $msg_insert = dataOrMsg($data, $action);
       echo json_encode($msg_insert);
       break;
     //-----------------------------------------------------------------------------------------------//
-    // MANAGE APP
     case 'manageApp':
       $dao_app = new DAO_applications();
       $dao_role = new DAO_roles();
       $dao_user = new DAO_users();
       $dao_relation = new DAO_relations();
-
       $title = $receiveData -> title;
+      $titleBis = str_replace(' ', '_', $title);
       $old_title = $receiveData -> old_title;
       $titleApps = $dao_app -> getTitleApps();
       for ($i = 0; $i <= count($titleApps) - 1 ; $i++) {
-        if ($title === $titleApps[$i]['title']) {
+        if ($titleBis == $titleApps[$i]['title']) {
           $msg_insert = 'This Title already exists!';
           echo json_encode($msg_insert);
           break 2;
@@ -133,6 +126,8 @@
       }
       else {
         // $title is OK
+        $title = str_replace(' ', '_', $title);
+        $receiveData -> title = $title;
         $data = $dao_app -> updateApp($receiveData);
         $updateData = $dao_app -> getAppByID($receiveData -> id_app);
         $updateData['old_title'] = $old_title;
@@ -145,7 +140,7 @@
       $msg_insert = 'Controller -> Switch Case null! (dflt msg)';
       echo json_encode($msg_insert);
       break;
-      //-----------------------------------------------------------------------------------------------//
+    //-----------------------------------------------------------------------------------------------//
   }
 
   function logIn($receiveData, $class, $func) {

@@ -1,5 +1,3 @@
-
-
 const Main = document.getElementById('main');
 const CnxLogIn = document.getElementById('connexion');
 const CnxSignIn = document.getElementById('subscribe');
@@ -40,52 +38,9 @@ function refreshDisplay() {
 function displayConnexion() {
   removeMainDisplay();
   toggleIfConnexion();
-
-  Main.innerHTML = `
-  <div class='mx-auto' style='max-width: 1140px;'>
-    <div class='md:py-0 py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center md:h-screen space-y-6 items-center'>
-      <div class='flex justify-center items-center'>
-        <span class='text-white font-bold text-3xl'>CONNEXION</span>
-      </div>
-      <div class='md:bg-white md:shadow-lg md:rounded md:w-3/4'>
-        <div class='dark:bg-zinc-800 dark:text-white'>
-          <div class='md:flex md:py-8 md:px-0 px-6 justify-center'>
-
-            <form id='form-login' action='login' class='md:px-16 px-2 md:py-3 py-12 md:w-3/4 md:border-b-0 border-b' method='POST'>
-              <h2 class='text-2xl font-semibold mb-4 whitespace-nowrap'>Connectez-vous via email :</h2>
-              <div class='w-full flex flex-col space-y-5 pt-14'>
-                <div class='flex flex-col space-y-1 flex-1 relative pb-10'>
-                  <label for='email' class='font-semibold'>Email</label>
-                  <input type='email' name='email' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Email' REQUIRED />
-                </div>
-                <div class='mb-4'>
-                  <label for='pwd' class='mb-2 flex justify-between items-center'>
-                    <span class='font-semibold'>Mot de passe</span>
-                    <a class='text-primary underline' href='#connexion'>Mot de passe oublié ?
-                    </a>
-                  </label>
-                  <div class='relative flex flex-col'>
-                    <input type='password' name='pwd' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Password' min-length='8' max-length='50' REQUIRED />
-                  </div>
-                  <span class='text-xs'>8 carac. min & 50 max &nbsp;&nbsp; | &nbsp;&nbsp; 1 majuscule & 1 minuscule min &nbsp;&nbsp; | &nbsp;&nbsp; 1 carac. spéc. & 1 chiffre min</span>
-                </div>
-                <div class='flex justify-end pt-10'>
-                  <input type='submit' id='logInForm' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value='Connexion' />
-                </div>
-                <div id='logInMsg'></div>
-              </div>
-            </form>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  `;
-
+  Main.innerHTML = vueConnexion();
   let action = '';
   let func;
-
   document.getElementById('form-login').addEventListener('submit', function (e) {
     e.preventDefault();
     action = 'logIn';
@@ -99,67 +54,9 @@ function displayConnexion() {
 function displayInscription() {
   removeMainDisplay();
   toggleIfInscription();
-
-  Main.innerHTML = `
-  <div class='mx-auto pt-8' style='max-width: 1140px;'>
-    <div class='md:pt-[6rem] pt-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center space-y-6 items-center'>
-      <div class='flex justify-center items-center'>
-        <span class='text-white font-bold text-3xl'>INSCRIPTION</span>
-      </div>
-      <div class='md:bg-white md:shadow-lg md:rounded md:w-3/4'>
-        <div class='dark:bg-zinc-800 dark:text-white'>
-          <div class='md:flex md:pt-8 md:px-0 px-6 justify-center'>
-          
-            <form id='form-signup' action='signup' class='md:px-16 px-2 md:py-3 py-12 md:w-3/4' method='POST'>
-              <h2 class="text-2xl font-semibold mb-4 whitespace-nowrap">Entrez les informations suivantes :</h2>
-              <div class="w-full flex flex-col space-y-5">
-                <div class='flex flex-col space-y-1 flex-1 relative'>
-                  <label for='email' class='font-semibold'>Votre email</label>
-                  <input type='email' name='email' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your email' REQUIRED />
-                </div>
-                <div class='flex flex-col space-y-1 flex-1 relative'>
-                  <label for='name' class='font-semibold'>Votre Nom</label>
-                  <input type='text' name='lastname' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your last name' REQUIRED />
-                </div>
-                <div class='flex flex-col space-y-1 flex-1 relative'>
-                  <label for='firstname' class='font-semibold'>Votre Prénom</label>
-                  <input type='text' name='firstname' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your first name' REQUIRED />
-                </div>
-                <div class='mb-4'>
-                  <label for='pwd' class='mb-2 flex justify-between items-center'>
-                    <span class='font-semibold'>Choisir un mot de passe</span>
-                  </label>
-                  <div class='relative flex flex-col'>
-                    <input type='password' name='pwd' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Password' min-length='8' max-length='50' REQUIRED />
-                  </div>
-                  <span class='text-xs'>8 carac. min & 50 max &nbsp;&nbsp; | &nbsp;&nbsp; 1 majuscule & 1 minuscule min &nbsp;&nbsp; | &nbsp;&nbsp; 1 carac. spéc. & 1 chiffre min</span>
-                </div>
-                <div class='mb-4'>
-                  <label for='pwdConfirm' class='mb-2 flex justify-between items-center'>
-                    <span class='font-semibold'>Confirmez le mot de passe</span>
-                  </label>
-                  <div class='relative flex flex-col'>
-                    <input type='password' name='pwdConfirm' class='block dark:bg-zinc-700 dark:border-zinc-900 dark:text-white p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Confirm Password' min-length='8' max-length='50' REQUIRED />
-                  </div>
-                  <span class='text-xs'>8 carac. min & 50 max &nbsp;&nbsp; | &nbsp;&nbsp; 1 majuscule & 1 minuscule min &nbsp;&nbsp; | &nbsp;&nbsp; 1 carac. spéc. & 1 chiffre min</span>
-                </div>
-                <div class='flex justify-end'>
-                  <input type='submit' id='signUpForm' class='cursor-pointer px-4 py-2 rounded flex space-x-2 hover:bg-gradient-to-r hover:from-black/5 hover:to-black/10 dark:hover:from-white/5 dark:hover:to-white/10 items-center text-white bg-[#335bff]' value='Inscription' />
-                </div>
-                <div id='signUpMsg'></div>
-              </div>
-            </form>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  `;
-
+  Main.innerHTML = vueInscription();
   let action = '';
   let func;
-
   document.getElementById('form-signup').addEventListener('submit', function (e) {
     e.preventDefault();
     action = 'signUp';
@@ -229,7 +126,6 @@ function defineSessionStorage(data) {
 
 // VERIF. BEFORE SENDING DATAS //
 function verifUserData(formData, action, func) {
-  
   sendCnxData(formData, action, func);
 }
 
@@ -237,58 +133,60 @@ function verifUserData(formData, action, func) {
 function sendCnxData(formData, action, func) {
   formData.action = action;
   let failure;
-  let displayMsg = null;
+  let displayMsg;
   let failureReturn = returnDataFailure;
   const LogInMsg = document.getElementById('logInMsg');
   const SignUpMsg = document.getElementById('signUpMsg');
   const CreateAppMsg = document.getElementById('createAppMsg');
   const ManageAppMsg = document.getElementById('manageAppMsg');
-
   switch (action) {
+    //----------------------------------------//
     case 'logIn':
       failure = `getUserByMailFail`;
       displayMsg = LogInMsg;
       break;
-
+    //----------------------------------------//
     case 'signUp':
       failure = `insertUserFail`;
       displayMsg = SignUpMsg;
       break;
-
+    //----------------------------------------//
     case 'createApp':
       failure = `${action}Fail`;
       displayMsg = CreateAppMsg;
       break;
-
+    //----------------------------------------//
     case 'getUserApps':
       failure = `${action}Fail`;
       displayMsg = DefaultMsg;
       break;
-
+    //----------------------------------------//
     case 'getApp':
       failure = `${action}Fail`;
       displayMsg = DefaultMsg;
       break;
-
+    //----------------------------------------//
     case 'getRoles':
       failure = `${action}Fail`;
       displayMsg = DefaultMsg;
       break;
-
+    //----------------------------------------//
     case 'getUsers':
       failure = `${action}Fail`;
       displayMsg = DefaultMsg;
       break;
-
+    //----------------------------------------//
     case 'manageApp':
       failure = `${action}Fail`;
       displayMsg = ManageAppMsg;
       break;
-  
+    //----------------------------------------//
     default:
+      failure = 'sendCnxDataFail'
+      displayMsg = DefaultMsg;
       break;
+    //----------------------------------------//
   }
-
   let fetchData = {
     method: 'POST',
     body: JSON.stringify(formData),

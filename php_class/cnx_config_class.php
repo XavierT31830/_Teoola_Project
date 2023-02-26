@@ -1,6 +1,6 @@
 <?php
 
-  require_once('cnx.class.php');
+  require_once('cnx_class.php');
 
   class Cnx_config {
     protected $cnx = null;

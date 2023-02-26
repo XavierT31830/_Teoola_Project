@@ -1,6 +1,6 @@
 <?php
 
-  require_once('cnx.config.class.php');
+  require_once('cnx_config_class.php');
 
   class DAO_applications extends Cnx_config {
 
