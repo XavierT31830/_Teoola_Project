@@ -1,19 +1,8 @@
 <?php
 
-  require_once ('cnx.class.php');
+  require_once('cnx.config.class.php');
 
-  class DAO_users {
-    private $cnx = null;
-    private $openCnx = null;
-
-    const HOST = 'mysql:host=localhost;dbname=traductions';
-    const LOGIN = 'root';
-    const PASSWORD = '';
-
-    public function cnx() {
-      $this -> cnx = new Dbcnx(self::HOST, self::LOGIN, self::PASSWORD);
-      $this -> openCnx = $this -> cnx -> openConnexion();
-    }
+  class DAO_users extends Cnx_config {
 
     public function insertUser($receiveData) {
       $this -> cnx();
@@ -31,7 +20,7 @@
 
     public function getUserByMail($email) {
       $this -> cnx();
-      $sql = 'SELECT * FROM traductions.users 
+      $sql = 'SELECT * FROM teoola_translations.users 
               WHERE BINARY `users`.`email` = :email';
       $request = $this -> openCnx -> prepare($sql);
       $request -> bindValue(':email', $email);
@@ -43,7 +32,7 @@
 
     public function getUserByID($id) {
       $this -> cnx();
-      $sql = 'SELECT * FROM traductions.users 
+      $sql = 'SELECT * FROM teoola_translations.users 
               WHERE BINARY `users`.`id_user` = :id_user';
       $request = $this -> openCnx -> prepare($sql);
       $request -> bindValue(':id_user', $id);

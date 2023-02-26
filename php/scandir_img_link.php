@@ -3,23 +3,18 @@
   require ('folders_stuff.php');
 
   function scanImgAppsDir($arrFiles, $imageFolder, $data) {
-    $count = 0;
     foreach ($arrFiles as $value) {
       $splitValues = explode('.', $value);
       if ($splitValues[1] !== '') {
         $arrValues = $splitValues[0];
-        foreach ($data as $app) {
-          if ($app['title'] == $arrValues) {
-            $app['img_link'] = $imageFolder . $value;
-            if (count($data) > 1) {
-              $data[$count]['img_link'] = $app['img_link'];
-            }
-            else {
-              $data[0]['img_link'] = $app['img_link'];
+        $count = 0;
+        if (count($data) != 0) {
+          for ($count; $count < count($data); $count++) {
+            if ($data[$count]['title'] == $arrValues) {
+              $data[$count]['img_link'] = $imageFolder . $value;
             }
           }
         }
-        $count++;
       }
     }
     return $data;

@@ -1,19 +1,8 @@
 <?php
 
-  require_once ('cnx.class.php');
+  require_once('cnx.config.class.php');
 
-  class DAO_applications {
-    private $cnx = null;
-    private $openCnx = null;
-
-    const HOST = 'mysql:host=localhost;dbname=traductions';
-    const LOGIN = 'root';
-    const PASSWORD = '';
-
-    public function cnx() {
-      $this -> cnx = new Dbcnx(self::HOST, self::LOGIN, self::PASSWORD);
-      $this -> openCnx = $this -> cnx -> openConnexion();
-    }
+  class DAO_applications extends Cnx_config {
 
     public function insertApp($receiveData) {
       $this -> cnx();
