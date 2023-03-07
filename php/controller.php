@@ -197,6 +197,9 @@
         }
       }
     }
+    else {
+      $msg = verifEmail($email);
+    }
     return $msg;
   }
 
