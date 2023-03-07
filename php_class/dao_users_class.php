@@ -9,8 +9,8 @@
       $sql = 'INSERT INTO `users` (`last_name`, `first_name`, `email`, `pwd`) 
               VALUES (:lastname, :firstname, :email, :pwd)';
       $request = $this -> openCnx -> prepare($sql);
-      $request -> bindValue(':lastname', $receiveData -> lastname);
-      $request -> bindValue(':firstname', $receiveData -> firstname);
+      $request -> bindValue(':lastname', $receiveData -> last_name);
+      $request -> bindValue(':firstname', $receiveData -> first_name);
       $request -> bindValue(':email', $receiveData -> email);
       $request -> bindValue(':pwd', $receiveData -> pwd);
       $bool = $request -> execute();
@@ -20,7 +20,8 @@
 
     public function getUserByMail($email) {
       $this -> cnx();
-      $sql = 'SELECT * FROM teoola_translations.users 
+      $sql = 'SELECT * 
+              FROM teoola_translations.users 
               WHERE BINARY `users`.`email` = :email';
       $request = $this -> openCnx -> prepare($sql);
       $request -> bindValue(':email', $email);
@@ -32,7 +33,8 @@
 
     public function getUserByID($id) {
       $this -> cnx();
-      $sql = 'SELECT * FROM teoola_translations.users 
+      $sql = 'SELECT * 
+              FROM teoola_translations.users 
               WHERE BINARY `users`.`id_user` = :id_user';
       $request = $this -> openCnx -> prepare($sql);
       $request -> bindValue(':id_user', $id);
@@ -44,7 +46,8 @@
 
     public function getUsers() {
       $this -> cnx();
-      $sql = 'SELECT `id_user`, `last_name`, `first_name`, `email` FROM `users`';
+      $sql = 'SELECT `id_user`, `last_name`, `first_name`, `email` 
+              FROM `users`';
       $request = $this -> openCnx -> prepare($sql);
       $request -> execute();
       $data = $request -> fetchAll();

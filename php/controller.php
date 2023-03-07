@@ -35,33 +35,45 @@
       else {
         $title = str_replace(' ', '_', $title);
         $receiveData -> title = $title;
-        $bool = $dao_app -> insertApp($receiveData);
-        if (!$bool) {
+        $appTitles = $dao_app -> getAppTitles();
+        $titleIsNew = true;
+        foreach ($appTitles as $value) {
+          if ($title == $value['title']) {
+            $titleIsNew = false;
+          }
+        }
+        if (!$titleIsNew) {
           $msg_insert = 'Application-Title already exists!';
         }
         else {
-          // Now => create relation :
-          $dao_relation = new DAO_relations();
-          $data = $dao_app -> getAppById(intVal($bool));
-          $data['role_id'] = 1; // Auto-assign to Admin/Owner rôle on app_creation
-          $relation = $dao_relation -> createAdminRelation($data);
-          if (!$relation) {
-            $delete = $dao_app -> deleteAppByID($data['id_app']);
-            if ($delete) {
-              $msg_insert = 'Error when creating relation! Application correctly deleted, please try again...';
-            }
-            else {
-              $msg_insert = 'Error when creating relation, then, error on deleting application!!';
-            }
-          }
-          else if ($relation) {
-            $msg_insert = 'New application correctly added!';
-            $data['msg'] = $msg_insert;
-            echo json_encode($data);
-            exit;
+          // Insert New App :
+          $bool = $dao_app -> insertApp($receiveData);
+          if (!$bool) {
+            $msg_insert = 'Error on creating new Application!';
           }
           else {
-            $msg_insert = 'Fatal Error!!';
+            // Now => create relation :
+            $dao_relation = new DAO_relations();
+            $data = $dao_app -> getAppById(intVal($bool));
+            $data['role_id'] = 1; // Auto-assign to Admin/Owner rôle on app_creation
+            $relation = $dao_relation -> createAdminRelation($data);
+            if (!$relation) {
+              $delete = $dao_app -> deleteAppByID($data['id_app']);
+              if ($delete) {
+                $msg_insert = 'Error when creating relation! Application correctly deleted, please try again...';
+              }
+              else {
+                $msg_insert = 'Error when creating relation, then, error on deleting application!!';
+              }
+            }
+            else if ($relation) {
+              $msg = 'New application correctly added!';
+              $data['msg'] = $msg;
+              $msg_insert = $data;
+            }
+            else {
+              $msg_insert = 'Fatal Error!!';
+            }
           }
         }
       }
@@ -109,31 +121,48 @@
       $dao_role = new DAO_roles();
       $dao_user = new DAO_users();
       $dao_relation = new DAO_relations();
-      $title = $receiveData -> title;
-      $titleBis = str_replace(' ', '_', $title);
-      $old_title = $receiveData -> old_title;
-      $titleApps = $dao_app -> getTitleApps();
-      for ($i = 0; $i <= count($titleApps) - 1 ; $i++) {
-        if ($titleBis == $titleApps[$i]['title']) {
-          $msg_insert = 'This Title already exists!';
-          echo json_encode($msg_insert);
-          break 2;
-        }
-      }
+      $title = security($receiveData -> title);
       if (verifTitleApp($title) != 1) {
         $msg_insert = verifTitleApp($title);
-        echo json_encode($msg_insert);
       }
       else {
-        // $title is OK
         $title = str_replace(' ', '_', $title);
         $receiveData -> title = $title;
-        $data = $dao_app -> updateApp($receiveData);
-        $updateData = $dao_app -> getAppByID($receiveData -> id_app);
-        $updateData['old_title'] = $old_title;
-        $updateData['msg'] = 'App. correctly modified!';
-        echo json_encode(updateImgAppName($arrFiles, $imageFolder, $updateData));
+        $old_title = $receiveData -> old_title;
+        $appTitles = $dao_app -> getAppTitles();
+        $titleIsNew = true;
+        foreach ($appTitles as $value) {
+          if ($title == $value['title']) {
+            $titleIsNew = false;
+          }
+        }
+        $id = $receiveData -> id_app;
+        $data = $dao_app -> getAppTitleByID($id);
+        $newData = '';
+        if ($titleIsNew === false) {
+          if ($data['title'] === $title) {
+            $msg = 'App. correctly modified with same Title!';
+            $newData = $dao_app -> updateAppWithoutTitle($receiveData);
+          }
+          else {
+            $msg_insert = 'This Title already exists in another application!';
+          }
+        }
+        else {
+          $msg = 'App. correctly modified!';
+          $newData = $dao_app -> updateApp($receiveData);
+        }
+        if ($newData !== '') {
+          $updateDataAndImg = $dao_app -> getAppByID($id);
+          $updateDataAndImg['old_title'] = $old_title;
+          $updateDataAndImg['msg'] = $msg;
+          $msg_insert = updateImgAppName($arrFiles, $imageFolder, $updateDataAndImg);
+        }
+        else {
+          $msg_insert = 'Fatal Error!';
+        }
       }
+      echo json_encode($msg_insert);
       break;
     //-----------------------------------------------------------------------------------------------//    
     default:
@@ -173,18 +202,20 @@
 
   function signUp($receiveData, $class, $func) {
     $dao = new $class();
-    $lastname = $receiveData -> lastname;
-    $firstname = $receiveData -> firstname;
+
+    $last_name = $receiveData -> last_name;
+    $first_name = $receiveData -> first_name;
     $email = $receiveData -> email;
     $pwd = $receiveData -> pwd;
     $pwdConfirm = $receiveData -> pwdConfirm;
-    if (verifName($lastname) == 1 && verifName($firstname) == 1 && verifEmail($email) == 1 && verifPwd($pwd) == 1 && verifPwd($pwdConfirm) == 1) {
+
+    if (verifName($last_name) == 1 && verifName($first_name) == 1 && verifEmail($email) == 1 && verifPwd($pwd) == 1 && verifPwd($pwdConfirm) == 1) {
       if ($pwd != $pwdConfirm) {
         $msg = 'Password confirmation is incorrect!';
       }
       else {
-        $lastname = security($receiveData -> lastname);
-        $firstname = security($receiveData -> firstname);
+        $last_name = security($receiveData -> last_name);
+        $first_name = security($receiveData -> first_name);
         $email = security($receiveData -> email);
         $pwd = security($receiveData -> pwd);
         $receiveData -> pwd = hash('sha256', $receiveData -> pwd);
@@ -198,11 +229,11 @@
       }
     }
     else {
-      if (verifName($lastname) != 1) {
-        $msg = verifName($lastname);
+      if (verifName($last_name) != 1) {
+        $msg = verifName($last_name);
       }
-      else if (verifName($firstname) != 1) {
-        $msg = verifName($firstname);
+      else if (verifName($first_name) != 1) {
+        $msg = verifName($first_name);
       }
       else if (verifEmail($email) != 1) {
         $msg = verifEmail($email);
@@ -211,7 +242,7 @@
         $msg = verifPwd($pwd);
       }
       else if (verifPwd($pwdConfirm) != 1) {
-        $msg = 'Invalid Password Confirmation!';
+        $msg = 'Password Confirmation Invalid!';
       }
     }
     return $msg;

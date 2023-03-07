@@ -6,7 +6,9 @@
 
     public function getRoleByID($id) {
       $this -> cnx();
-      $sql = 'SELECT * FROM `roles` WHERE `id_role` = :id_role';
+      $sql = 'SELECT * 
+              FROM `roles` 
+              WHERE `id_role` = :id_role';
       $request = $this -> openCnx -> prepare($sql);
       $request -> bindValue(':id_role', $id);
       $request -> execute();
@@ -17,7 +19,8 @@
 
     public function getRoles() {
       $this -> cnx();
-      $sql = 'SELECT * FROM `roles`';
+      $sql = 'SELECT * 
+              FROM `roles`';
       $request = $this -> openCnx -> prepare($sql);
       $request -> execute();
       $data = $request -> fetchAll();

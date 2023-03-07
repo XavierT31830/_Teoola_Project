@@ -47,7 +47,7 @@ function displayConnexion() {
     func = getUserByMailSuccess;
     let data = new FormData(e.target).entries();
     let formData = Object.fromEntries(data);
-    verifUserData(formData, action, func);
+    sendCnxData(formData, action, func);
   });
 }
 
@@ -126,10 +126,12 @@ function defineSessionStorage(data) {
 
 // VERIF. BEFORE SENDING DATAS //
 function verifUserData(formData, action, func) {
+  
   sendCnxData(formData, action, func);
 }
 
 // SENDING DATAS WITH FETCH //
+
 function sendCnxData(formData, action, func) {
   formData.action = action;
   let failure;

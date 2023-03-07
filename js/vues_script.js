@@ -1,7 +1,6 @@
 
 function vueConnexion() {
-  vue = `
-  <div class='mx-auto' style='max-width: 1140px;'>
+  vue = `<div class='mx-auto' style='max-width: 1140px;'>
     <div class='md:py-0 py-5 md:bg-transparent bg-white dark:bg-zinc-800 md:dark:bg-transparent md:flex flex-col justify-center md:h-screen space-y-6 items-center'>
       <div class='flex justify-center items-center'>
         <span class='text-white font-bold text-3xl'>CONNEXION</span>
@@ -9,7 +8,6 @@ function vueConnexion() {
       <div class='md:bg-white md:shadow-lg md:rounded md:w-3/4'>
         <div class='dark:bg-zinc-800 dark:text-white'>
           <div class='md:flex md:py-8 md:px-0 px-6 justify-center'>
-
             <form id='form-login' action='login' class='md:px-16 px-2 md:py-3 py-12 md:w-3/4 md:border-b-0 border-b' method='POST'>
               <h2 class='text-2xl font-semibold mb-4 whitespace-nowrap'>Connectez-vous via email :</h2>
               <div class='w-full flex flex-col space-y-5 pt-14'>
@@ -39,8 +37,7 @@ function vueConnexion() {
         </div>
       </div>
     </div>
-  </div>
-  `;
+  </div>`;
   return vue;
 }
 
@@ -63,12 +60,12 @@ function vueInscription() {
                   <input type='email' name='email' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your email' REQUIRED />
                 </div>
                 <div class='flex flex-col space-y-1 flex-1 relative'>
-                  <label for='name' class='font-semibold'>Votre Nom</label>
-                  <input type='text' name='lastname' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your last name' REQUIRED />
+                  <label for='last_name' class='font-semibold'>Votre Nom</label>
+                  <input type='text' name='last_name' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your last name' REQUIRED />
                 </div>
                 <div class='flex flex-col space-y-1 flex-1 relative'>
-                  <label for='firstname' class='font-semibold'>Votre Prénom</label>
-                  <input type='text' name='firstname' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your first name' REQUIRED />
+                  <label for='first_name' class='font-semibold'>Votre Prénom</label>
+                  <input type='text' name='first_name' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' placeholder='Your first name' REQUIRED />
                 </div>
                 <div class='mb-4'>
                   <label for='pwd' class='mb-2 flex justify-between items-center'>
@@ -245,8 +242,8 @@ function vueManageApp(data, roles, users) {
             <textarea name='description' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block pt-2 pb-0 px-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='2' min-length='2' REQUIRED>${data.description}</textarea>
           </div>
           <div class='flex flex-col space-y-1 flex-1 relative'>
-            <label for='content' class='font-semibold'>Contenu</label>
-            <textarea name='content' class='dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block pt-2 pb-0 px-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='2' min-length='2'>${data.content}</textarea>
+            <label for='content' class='hidden font-semibold'>Contenu</label>
+            <textarea name='content' class='hidden dark:bg-zinc-700 dark:border-zinc-900 dark:text-white block pt-2 pb-0 px-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary' rows='2' min-length='2'>${data.content}</textarea>
           </div>
           <div class='flex flex-col space-y-1 flex-1 relative'>
             <label for='role' class='font-semibold'>Choisir un rôle à assigner</label>

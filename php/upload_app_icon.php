@@ -18,7 +18,6 @@
         $fileTempName = $_FILES[$title[0]]['tmp_name'];
         $newFileName = $title[0] . $separator . $fileExtension;
         $uploadPath = $uploadDirectory . basename($newFileName);
-  
         if (!in_array($fileExtToLower, $fileExtensionsAllowed)) {
           $errors[] = "This file extension is not allowed. Please upload a JPEG, JPG, PNG, GIF or SVG file. ||";
         }

@@ -45,9 +45,8 @@ function createApp() {
   window.location.hash = '#create_app';
   removeMainDisplay();
   Main.innerHTML = vueCreateApp();
-  let action = '';
+  let action;
   let func;
-
   document.getElementById('form-create-app').addEventListener('submit', function (e) {
     e.preventDefault();
     action = 'createApp';
@@ -98,18 +97,17 @@ function createAppsListeners(allApps) {
 }
 
 // SUCCESS //
+
 function createAppSuccess(resp, displayMsg) {
   if (resp.msg === undefined) {
     displayMsg.innerHTML = `${resp}`;
   }
   else {
     displayMsg.innerHTML = `${resp.msg}`;
-    if (resp.msg === `New application correctly added!`) {
-      setTimeout(() => {
-        sessionStorage.appTitle = resp.title;
-        return uploadAppIcon(resp.title);
-      }, '1500');
-    }
+    setTimeout(() => {
+      sessionStorage.appTitle = resp.title;
+      return uploadAppIcon(resp.title);
+    }, '1500');
   }
 }
 

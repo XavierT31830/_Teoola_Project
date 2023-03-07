@@ -63,7 +63,7 @@ function manageAppSuccess(resp, displayMsg) {
     setTimeout(() => {
       displayMsg.innerHTML = `${resp.msg}`;
     }, '1000');
-    if (resp.msg === `App. correctly modified!`) {
+    if (resp.msg === `App. correctly modified!` || resp.msg === `App. correctly modified with same Title!`) {
       setTimeout(() => {
         displayMsg.innerHTML = '';
         urlRefresh = '#app_list_refresh';
